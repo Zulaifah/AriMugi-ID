@@ -649,99 +649,264 @@ if choice == "🏠 Home":
         </div>
         """, unsafe_allow_html=True)
     
-    # ============================================
-    # TAMBAHAN: SENARAI SPESIES
+        # ============================================
+    # TAMBAHAN: SENARAI SPESIES (INTERACTIVE)
     # ============================================
     st.markdown("### 📋 Species Quick Look")
-    st.markdown("Browse all 17 species available in AriMugi ID")
+    st.markdown("👆 **Click on any species name** to view detailed information")
     
+    # ============================================
+    # DATA SPESIES LENGKAP
+    # ============================================
+    SPECIES_DETAILS = {
+        # ===== ARIIDAE (12 species) =====
+        "Arius gagora": {
+            "common": "Gagora Catfish",
+            "short": "A.GAGORA",
+            "family": "Ariidae",
+            "size": "Up to 45 cm",
+            "habitat": "Estuaries, coastal waters",
+            "diet": "Carnivorous - small fish, crustaceans",
+            "conservation": "Least Concern",
+            "features": "Long barbels, compressed body"
+        },
+        "Arius leptonotacanthus": {
+            "common": "Thin-spined Catfish",
+            "short": "A.LEPTONOTACANTHUS",
+            "family": "Ariidae",
+            "size": "Up to 35 cm",
+            "habitat": "Freshwater and brackish waters",
+            "diet": "Omnivorous - insects, plants",
+            "conservation": "Data Deficient",
+            "features": "Thin dorsal spine, elongated body"
+        },
+        "Arius maculatus": {
+            "common": "Spotted Catfish",
+            "short": "A.MACULATUS",
+            "family": "Ariidae",
+            "size": "Up to 45 cm",
+            "habitat": "Coastal waters, estuaries, mangroves",
+            "diet": "Carnivorous - small fish, crustaceans",
+            "conservation": "Least Concern",
+            "features": "Dark spots on body, 4 pairs of barbels"
+        },
+        "Arius oetik": {
+            "common": "Oetik Catfish",
+            "short": "A.OETIK",
+            "family": "Ariidae",
+            "size": "Up to 30 cm",
+            "habitat": "Freshwater rivers and streams",
+            "diet": "Carnivorous - small fish",
+            "conservation": "Least Concern",
+            "features": "Small size, slender body"
+        },
+        "Arius venosus": {
+            "common": "Veined Catfish",
+            "short": "A.VENOSUS",
+            "family": "Ariidae",
+            "size": "Up to 30 cm",
+            "habitat": "Shallow coastal waters, coral reefs",
+            "diet": "Omnivorous - small fish, algae",
+            "conservation": "Data Deficient",
+            "features": "Distinctive veined pattern on head"
+        },
+        "Cryptarius truncatus": {
+            "common": "Truncate Catfish",
+            "short": "C.TRUNCATUS",
+            "family": "Ariidae",
+            "size": "Up to 25 cm",
+            "habitat": "Freshwater and estuarine",
+            "diet": "Carnivorous - insects, worms",
+            "conservation": "Least Concern",
+            "features": "Truncated head shape"
+        },
+        "Hexanematichthys sagor": {
+            "common": "Sagor Catfish",
+            "short": "H.SAGOR",
+            "family": "Ariidae",
+            "size": "Up to 35 cm",
+            "habitat": "Estuaries, rivers, coastal waters",
+            "diet": "Omnivorous - fish, plants, insects",
+            "conservation": "Least Concern",
+            "features": "Long maxillary barbels, small eyes"
+        },
+        "Nemapteryx macronotacantha": {
+            "common": "Large-spined Catfish",
+            "short": "N.MACRONOTACANTHA",
+            "family": "Ariidae",
+            "size": "Up to 28 cm",
+            "habitat": "Coastal waters, estuaries",
+            "diet": "Carnivorous - small crustaceans",
+            "conservation": "Least Concern",
+            "features": "Prominent dorsal spine"
+        },
+        "Nemapteryx nenga": {
+            "common": "Nenga Catfish",
+            "short": "N.NENGA",
+            "family": "Ariidae",
+            "size": "Up to 25 cm",
+            "habitat": "Freshwater and brackish",
+            "diet": "Omnivorous - small fish, plants",
+            "conservation": "Least Concern",
+            "features": "Small size, compressed body"
+        },
+        "Osteogeneiosus militaris": {
+            "common": "Soldier Catfish",
+            "short": "O.MILITARIS",
+            "family": "Ariidae",
+            "size": "Up to 40 cm",
+            "habitat": "Coastal waters, estuaries",
+            "diet": "Carnivorous - fish, shrimp",
+            "conservation": "Least Concern",
+            "features": "Bony head shield, elongated body"
+        },
+        "Plicofollis argyropleuron": {
+            "common": "Silver-lined Catfish",
+            "short": "P.ARGYROPLEURON",
+            "family": "Ariidae",
+            "size": "Up to 32 cm",
+            "habitat": "Estuaries, mangroves",
+            "diet": "Carnivorous - crustaceans",
+            "conservation": "Least Concern",
+            "features": "Silver longitudinal band"
+        },
+        "Plicofollis layardi": {
+            "common": "Layard's Catfish",
+            "short": "P.LAYARDI",
+            "family": "Ariidae",
+            "size": "Up to 30 cm",
+            "habitat": "Freshwater and brackish",
+            "diet": "Carnivorous - small fish",
+            "conservation": "Least Concern",
+            "features": "Rugose head, long barbels"
+        },
+        # ===== MUGILIDAE (5 species) =====
+        "Planiliza": {
+            "common": "Planiliza",
+            "short": "Planiliza",
+            "family": "Mugilidae",
+            "size": "Up to 30 cm",
+            "habitat": "Coastal waters, estuaries",
+            "diet": "Omnivorous - algae, small invertebrates",
+            "conservation": "Least Concern",
+            "features": "Elongated body, small mouth"
+        },
+        "Moolgarda s": {
+            "common": "Moolgarda s",
+            "short": "Moolgarda s",
+            "family": "Mugilidae",
+            "size": "Up to 35 cm",
+            "habitat": "Coastal waters, rivers",
+            "diet": "Omnivorous - algae, detritus",
+            "conservation": "Least Concern",
+            "features": "Compressed head, small eyes"
+        },
+        "Osteomugil": {
+            "common": "Osteomugil",
+            "short": "Osteomugil",
+            "family": "Mugilidae",
+            "size": "Up to 40 cm",
+            "habitat": "Coastal waters, estuaries",
+            "diet": "Omnivorous - plankton, algae",
+            "conservation": "Least Concern",
+            "features": "Bony head, large scales"
+        },
+        "Moolgarda t": {
+            "common": "Moolgarda t",
+            "short": "Moolgarda t",
+            "family": "Mugilidae",
+            "size": "Up to 32 cm",
+            "habitat": "Freshwater and brackish",
+            "diet": "Omnivorous - insects, plants",
+            "conservation": "Least Concern",
+            "features": "Slender body, long fins"
+        },
+        "Ellochelon": {
+            "common": "Ellochelon",
+            "short": "Ellochelon",
+            "family": "Mugilidae",
+            "size": "Up to 28 cm",
+            "habitat": "Estuaries, mangroves",
+            "diet": "Omnivorous - small crustaceans",
+            "conservation": "Least Concern",
+            "features": "Short head, large mouth"
+        }
+    }
+    
+    # ============================================
+    # DISPLAY SPECIES CARDS (INTERACTIVE)
+    # ============================================
     col1, col2 = st.columns(2)
     
+    # Ariidae species
     with col1:
         st.markdown("""
         <div style="background: linear-gradient(135deg, #f0f4ff, #fff); padding: 1rem; border-radius: 12px; border: 1px solid #e8e8e8;">
             <h4 style="color: #667eea; margin-top: 0;">🐟 Ariidae (12 species)</h4>
-            <ul style="list-style-type: none; padding-left: 0; margin-bottom: 0;">
-                <li style="padding: 0.2rem 0; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between;">
-                    <span>Arius gagora</span>
-                    <span style="color: #888; font-size: 0.8rem;">A.GAGORA</span>
-                </li>
-                <li style="padding: 0.2rem 0; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between;">
-                    <span>Arius leptonotacanthus</span>
-                    <span style="color: #888; font-size: 0.8rem;">A.LEPTONOTACANTHUS</span>
-                </li>
-                <li style="padding: 0.2rem 0; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between;">
-                    <span>Arius maculatus</span>
-                    <span style="color: #888; font-size: 0.8rem;">A.MACULATUS</span>
-                </li>
-                <li style="padding: 0.2rem 0; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between;">
-                    <span>Arius oetik</span>
-                    <span style="color: #888; font-size: 0.8rem;">A.OETIK</span>
-                </li>
-                <li style="padding: 0.2rem 0; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between;">
-                    <span>Arius venosus</span>
-                    <span style="color: #888; font-size: 0.8rem;">A.VENOSUS</span>
-                </li>
-                <li style="padding: 0.2rem 0; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between;">
-                    <span>Cryptarius truncatus</span>
-                    <span style="color: #888; font-size: 0.8rem;">C.TRUNCATUS</span>
-                </li>
-                <li style="padding: 0.2rem 0; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between;">
-                    <span>Hexanematichthys sagor</span>
-                    <span style="color: #888; font-size: 0.8rem;">H.SAGOR</span>
-                </li>
-                <li style="padding: 0.2rem 0; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between;">
-                    <span>Nemapteryx macronotacantha</span>
-                    <span style="color: #888; font-size: 0.8rem;">N.MACRONOTACANTHA</span>
-                </li>
-                <li style="padding: 0.2rem 0; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between;">
-                    <span>Nemapteryx nenga</span>
-                    <span style="color: #888; font-size: 0.8rem;">N.NENGA</span>
-                </li>
-                <li style="padding: 0.2rem 0; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between;">
-                    <span>Osteogeneiosus militaris</span>
-                    <span style="color: #888; font-size: 0.8rem;">O.MILITARIS</span>
-                </li>
-                <li style="padding: 0.2rem 0; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between;">
-                    <span>Plicofollis argyropleuron</span>
-                    <span style="color: #888; font-size: 0.8rem;">P.ARGYROPLEURON</span>
-                </li>
-                <li style="padding: 0.2rem 0; display: flex; justify-content: space-between;">
-                    <span>Plicofollis layardi</span>
-                    <span style="color: #888; font-size: 0.8rem;">P.LAYARDI</span>
-                </li>
-            </ul>
         </div>
         """, unsafe_allow_html=True)
+        
+        # Display each Ariidae species as a clickable button
+        ariidae_species = [
+            "Arius gagora", "Arius leptonotacanthus", "Arius maculatus",
+            "Arius oetik", "Arius venosus", "Cryptarius truncatus",
+            "Hexanematichthys sagor", "Nemapteryx macronotacantha",
+            "Nemapteryx nenga", "Osteogeneiosus militaris",
+            "Plicofollis argyropleuron", "Plicofollis layardi"
+        ]
+        
+        for species in ariidae_species:
+            details = SPECIES_DETAILS.get(species, {})
+            short = details.get("short", "")
+            # Create a unique key for each expander
+            with st.expander(f"🐟 {species} ({short})"):
+                col_a, col_b = st.columns(2)
+                with col_a:
+                    st.markdown(f"""
+                    **📌 Scientific Name:** {species}  
+                    **📝 Common Name:** {details.get('common', 'N/A')}  
+                    **🏷️ Short Code:** {short}  
+                    **👨‍👩‍👧‍👦 Family:** {details.get('family', 'N/A')}  
+                    """)
+                with col_b:
+                    st.markdown(f"""
+                    **📏 Size:** {details.get('size', 'N/A')}  
+                    **🌊 Habitat:** {details.get('habitat', 'N/A')}  
+                    **🍽️ Diet:** {details.get('diet', 'N/A')}  
+                    **🌍 Conservation:** {details.get('conservation', 'N/A')}  
+                    """)
+                st.markdown(f"**🔬 Features:** {details.get('features', 'N/A')}")
     
+    # Mugilidae species
     with col2:
         st.markdown("""
         <div style="background: linear-gradient(135deg, #fef9e7, #fff); padding: 1rem; border-radius: 12px; border: 1px solid #f0e8d0;">
             <h4 style="color: #f7971e; margin-top: 0;">🐟 Mugilidae (5 species)</h4>
-            <ul style="list-style-type: none; padding-left: 0; margin-bottom: 0;">
-                <li style="padding: 0.2rem 0; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between;">
-                    <span>Planiliza</span>
-                    <span style="color: #888; font-size: 0.8rem;">Planiliza</span>
-                </li>
-                <li style="padding: 0.2rem 0; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between;">
-                    <span>Moolgarda s</span>
-                    <span style="color: #888; font-size: 0.8rem;">Moolgarda s</span>
-                </li>
-                <li style="padding: 0.2rem 0; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between;">
-                    <span>Osteomugil</span>
-                    <span style="color: #888; font-size: 0.8rem;">Osteomugil</span>
-                </li>
-                <li style="padding: 0.2rem 0; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between;">
-                    <span>Moolgarda t</span>
-                    <span style="color: #888; font-size: 0.8rem;">Moolgarda t</span>
-                </li>
-                <li style="padding: 0.2rem 0; display: flex; justify-content: space-between;">
-                    <span>Ellochelon</span>
-                    <span style="color: #888; font-size: 0.8rem;">Ellochelon</span>
-                </li>
-            </ul>
         </div>
         """, unsafe_allow_html=True)
+        
+        mugilidae_species = ["Planiliza", "Moolgarda s", "Osteomugil", "Moolgarda t", "Ellochelon"]
+        
+        for species in mugilidae_species:
+            details = SPECIES_DETAILS.get(species, {})
+            short = details.get("short", "")
+            with st.expander(f"🐟 {species}"):
+                col_a, col_b = st.columns(2)
+                with col_a:
+                    st.markdown(f"""
+                    **📌 Scientific Name:** {species}  
+                    **📝 Common Name:** {details.get('common', 'N/A')}  
+                    **🏷️ Short Code:** {short}  
+                    **👨‍👩‍👧‍👦 Family:** {details.get('family', 'N/A')}  
+                    """)
+                with col_b:
+                    st.markdown(f"""
+                    **📏 Size:** {details.get('size', 'N/A')}  
+                    **🌊 Habitat:** {details.get('habitat', 'N/A')}  
+                    **🍽️ Diet:** {details.get('diet', 'N/A')}  
+                    **🌍 Conservation:** {details.get('conservation', 'N/A')}  
+                    """)
+                st.markdown(f"**🔬 Features:** {details.get('features', 'N/A')}")
         
 # ============================================
 # ARIIDAE CLASSIFIER (DENGAN GAMBAR)
