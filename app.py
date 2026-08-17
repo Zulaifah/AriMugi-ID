@@ -388,6 +388,184 @@ MUGILIDAE_NAME_MAPPING = {
 }
 
 # ============================================
+# DATA SPESIES LENGKAP (GLOBAL)
+# ============================================
+SPECIES_DETAILS = {
+    # ===== ARIIDAE (12 species) =====
+    "Arius gagora": {
+        "common": "Gagora Catfish",
+        "short": "A.GAGORA",
+        "family": "Ariidae",
+        "size": "Up to 45 cm",
+        "habitat": "Estuaries, coastal waters",
+        "diet": "Carnivorous - small fish, crustaceans",
+        "conservation": "Least Concern",
+        "features": "Long barbels, compressed body"
+    },
+    "Arius leptonotacanthus": {
+        "common": "Thin-spined Catfish",
+        "short": "A.LEPTONOTACANTHUS",
+        "family": "Ariidae",
+        "size": "Up to 35 cm",
+        "habitat": "Freshwater and brackish waters",
+        "diet": "Omnivorous - insects, plants",
+        "conservation": "Data Deficient",
+        "features": "Thin dorsal spine, elongated body"
+    },
+    "Arius maculatus": {
+        "common": "Spotted Catfish",
+        "short": "A.MACULATUS",
+        "family": "Ariidae",
+        "size": "Up to 45 cm",
+        "habitat": "Coastal waters, estuaries, mangroves",
+        "diet": "Carnivorous - small fish, crustaceans",
+        "conservation": "Least Concern",
+        "features": "Dark spots on body, 4 pairs of barbels"
+    },
+    "Arius oetik": {
+        "common": "Oetik Catfish",
+        "short": "A.OETIK",
+        "family": "Ariidae",
+        "size": "Up to 30 cm",
+        "habitat": "Freshwater rivers and streams",
+        "diet": "Carnivorous - small fish",
+        "conservation": "Least Concern",
+        "features": "Small size, slender body"
+    },
+    "Arius venosus": {
+        "common": "Veined Catfish",
+        "short": "A.VENOSUS",
+        "family": "Ariidae",
+        "size": "Up to 30 cm",
+        "habitat": "Shallow coastal waters, coral reefs",
+        "diet": "Omnivorous - small fish, algae",
+        "conservation": "Data Deficient",
+        "features": "Distinctive veined pattern on head"
+    },
+    "Cryptarius truncatus": {
+        "common": "Truncate Catfish",
+        "short": "C.TRUNCATUS",
+        "family": "Ariidae",
+        "size": "Up to 25 cm",
+        "habitat": "Freshwater and estuarine",
+        "diet": "Carnivorous - insects, worms",
+        "conservation": "Least Concern",
+        "features": "Truncated head shape"
+    },
+    "Hexanematichthys sagor": {
+        "common": "Sagor Catfish",
+        "short": "H.SAGOR",
+        "family": "Ariidae",
+        "size": "Up to 35 cm",
+        "habitat": "Estuaries, rivers, coastal waters",
+        "diet": "Omnivorous - fish, plants, insects",
+        "conservation": "Least Concern",
+        "features": "Long maxillary barbels, small eyes"
+    },
+    "Nemapteryx macronotacantha": {
+        "common": "Large-spined Catfish",
+        "short": "N.MACRONOTACANTHA",
+        "family": "Ariidae",
+        "size": "Up to 28 cm",
+        "habitat": "Coastal waters, estuaries",
+        "diet": "Carnivorous - small crustaceans",
+        "conservation": "Least Concern",
+        "features": "Prominent dorsal spine"
+    },
+    "Nemapteryx nenga": {
+        "common": "Nenga Catfish",
+        "short": "N.NENGA",
+        "family": "Ariidae",
+        "size": "Up to 25 cm",
+        "habitat": "Freshwater and brackish",
+        "diet": "Omnivorous - small fish, plants",
+        "conservation": "Least Concern",
+        "features": "Small size, compressed body"
+    },
+    "Osteogeneiosus militaris": {
+        "common": "Soldier Catfish",
+        "short": "O.MILITARIS",
+        "family": "Ariidae",
+        "size": "Up to 40 cm",
+        "habitat": "Coastal waters, estuaries",
+        "diet": "Carnivorous - fish, shrimp",
+        "conservation": "Least Concern",
+        "features": "Bony head shield, elongated body"
+    },
+    "Plicofollis argyropleuron": {
+        "common": "Silver-lined Catfish",
+        "short": "P.ARGYROPLEURON",
+        "family": "Ariidae",
+        "size": "Up to 32 cm",
+        "habitat": "Estuaries, mangroves",
+        "diet": "Carnivorous - crustaceans",
+        "conservation": "Least Concern",
+        "features": "Silver longitudinal band"
+    },
+    "Plicofollis layardi": {
+        "common": "Layard's Catfish",
+        "short": "P.LAYARDI",
+        "family": "Ariidae",
+        "size": "Up to 30 cm",
+        "habitat": "Freshwater and brackish",
+        "diet": "Carnivorous - small fish",
+        "conservation": "Least Concern",
+        "features": "Rugose head, long barbels"
+    },
+    # ===== MUGILIDAE (5 species - NAMA PENUH) =====
+    "Planiliza subviridis": {
+        "common": "Greenback Mullet",
+        "short": "P.SUBVIRIDIS",
+        "family": "Mugilidae",
+        "size": "Up to 30 cm",
+        "habitat": "Coastal waters, estuaries",
+        "diet": "Omnivorous - algae, small invertebrates",
+        "conservation": "Least Concern",
+        "features": "Greenish back, small mouth"
+    },
+    "Moolgarda seheli": {
+        "common": "Seheli Mullet",
+        "short": "M.SEHELI",
+        "family": "Mugilidae",
+        "size": "Up to 35 cm",
+        "habitat": "Coastal waters, rivers",
+        "diet": "Omnivorous - algae, detritus",
+        "conservation": "Least Concern",
+        "features": "Compressed head, small eyes"
+    },
+    "Osteomugil perusii": {
+        "common": "Perusii Mullet",
+        "short": "O.PERUSII",
+        "family": "Mugilidae",
+        "size": "Up to 40 cm",
+        "habitat": "Coastal waters, estuaries",
+        "diet": "Omnivorous - plankton, algae",
+        "conservation": "Least Concern",
+        "features": "Bony head, large scales"
+    },
+    "Moolgarda tade": {
+        "common": "Tade Mullet",
+        "short": "M.TADE",
+        "family": "Mugilidae",
+        "size": "Up to 32 cm",
+        "habitat": "Freshwater and brackish",
+        "diet": "Omnivorous - insects, plants",
+        "conservation": "Least Concern",
+        "features": "Slender body, long fins"
+    },
+    "Ellochelon vaigiensis": {
+        "common": "Squaretail Mullet",
+        "short": "E.VAIGIENSIS",
+        "family": "Mugilidae",
+        "size": "Up to 28 cm",
+        "habitat": "Estuaries, mangroves",
+        "diet": "Omnivorous - small crustaceans",
+        "conservation": "Least Concern",
+        "features": "Short head, large mouth"
+    }
+}
+
+# ============================================
 # FUNGSI UNTUK DAPATKAN GAMBAR
 # ============================================
 def get_species_image(species_name, family="ariidae"):
@@ -665,184 +843,6 @@ if choice == "🏠 Home":
     # ============================================
     st.markdown("### 📋 Species Quick Look")
     st.markdown("👆 **Click on any species name** to view detailed information")
-    
-    # ============================================
-    # DATA SPESIES LENGKAP (DENGAN NAMA MUGILIDAE PENUH)
-    # ============================================
-    SPECIES_DETAILS = {
-        # ===== ARIIDAE (12 species) =====
-        "Arius gagora": {
-            "common": "Gagora Catfish",
-            "short": "A.GAGORA",
-            "family": "Ariidae",
-            "size": "Up to 45 cm",
-            "habitat": "Estuaries, coastal waters",
-            "diet": "Carnivorous - small fish, crustaceans",
-            "conservation": "Least Concern",
-            "features": "Long barbels, compressed body"
-        },
-        "Arius leptonotacanthus": {
-            "common": "Thin-spined Catfish",
-            "short": "A.LEPTONOTACANTHUS",
-            "family": "Ariidae",
-            "size": "Up to 35 cm",
-            "habitat": "Freshwater and brackish waters",
-            "diet": "Omnivorous - insects, plants",
-            "conservation": "Data Deficient",
-            "features": "Thin dorsal spine, elongated body"
-        },
-        "Arius maculatus": {
-            "common": "Spotted Catfish",
-            "short": "A.MACULATUS",
-            "family": "Ariidae",
-            "size": "Up to 45 cm",
-            "habitat": "Coastal waters, estuaries, mangroves",
-            "diet": "Carnivorous - small fish, crustaceans",
-            "conservation": "Least Concern",
-            "features": "Dark spots on body, 4 pairs of barbels"
-        },
-        "Arius oetik": {
-            "common": "Oetik Catfish",
-            "short": "A.OETIK",
-            "family": "Ariidae",
-            "size": "Up to 30 cm",
-            "habitat": "Freshwater rivers and streams",
-            "diet": "Carnivorous - small fish",
-            "conservation": "Least Concern",
-            "features": "Small size, slender body"
-        },
-        "Arius venosus": {
-            "common": "Veined Catfish",
-            "short": "A.VENOSUS",
-            "family": "Ariidae",
-            "size": "Up to 30 cm",
-            "habitat": "Shallow coastal waters, coral reefs",
-            "diet": "Omnivorous - small fish, algae",
-            "conservation": "Data Deficient",
-            "features": "Distinctive veined pattern on head"
-        },
-        "Cryptarius truncatus": {
-            "common": "Truncate Catfish",
-            "short": "C.TRUNCATUS",
-            "family": "Ariidae",
-            "size": "Up to 25 cm",
-            "habitat": "Freshwater and estuarine",
-            "diet": "Carnivorous - insects, worms",
-            "conservation": "Least Concern",
-            "features": "Truncated head shape"
-        },
-        "Hexanematichthys sagor": {
-            "common": "Sagor Catfish",
-            "short": "H.SAGOR",
-            "family": "Ariidae",
-            "size": "Up to 35 cm",
-            "habitat": "Estuaries, rivers, coastal waters",
-            "diet": "Omnivorous - fish, plants, insects",
-            "conservation": "Least Concern",
-            "features": "Long maxillary barbels, small eyes"
-        },
-        "Nemapteryx macronotacantha": {
-            "common": "Large-spined Catfish",
-            "short": "N.MACRONOTACANTHA",
-            "family": "Ariidae",
-            "size": "Up to 28 cm",
-            "habitat": "Coastal waters, estuaries",
-            "diet": "Carnivorous - small crustaceans",
-            "conservation": "Least Concern",
-            "features": "Prominent dorsal spine"
-        },
-        "Nemapteryx nenga": {
-            "common": "Nenga Catfish",
-            "short": "N.NENGA",
-            "family": "Ariidae",
-            "size": "Up to 25 cm",
-            "habitat": "Freshwater and brackish",
-            "diet": "Omnivorous - small fish, plants",
-            "conservation": "Least Concern",
-            "features": "Small size, compressed body"
-        },
-        "Osteogeneiosus militaris": {
-            "common": "Soldier Catfish",
-            "short": "O.MILITARIS",
-            "family": "Ariidae",
-            "size": "Up to 40 cm",
-            "habitat": "Coastal waters, estuaries",
-            "diet": "Carnivorous - fish, shrimp",
-            "conservation": "Least Concern",
-            "features": "Bony head shield, elongated body"
-        },
-        "Plicofollis argyropleuron": {
-            "common": "Silver-lined Catfish",
-            "short": "P.ARGYROPLEURON",
-            "family": "Ariidae",
-            "size": "Up to 32 cm",
-            "habitat": "Estuaries, mangroves",
-            "diet": "Carnivorous - crustaceans",
-            "conservation": "Least Concern",
-            "features": "Silver longitudinal band"
-        },
-        "Plicofollis layardi": {
-            "common": "Layard's Catfish",
-            "short": "P.LAYARDI",
-            "family": "Ariidae",
-            "size": "Up to 30 cm",
-            "habitat": "Freshwater and brackish",
-            "diet": "Carnivorous - small fish",
-            "conservation": "Least Concern",
-            "features": "Rugose head, long barbels"
-        },
-        # ===== MUGILIDAE (5 species - NAMA PENUH) =====
-        "Planiliza subviridis": {
-            "common": "Greenback Mullet",
-            "short": "P.SUBVIRIDIS",
-            "family": "Mugilidae",
-            "size": "Up to 30 cm",
-            "habitat": "Coastal waters, estuaries",
-            "diet": "Omnivorous - algae, small invertebrates",
-            "conservation": "Least Concern",
-            "features": "Greenish back, small mouth"
-        },
-        "Moolgarda seheli": {
-            "common": "Seheli Mullet",
-            "short": "M.SEHELI",
-            "family": "Mugilidae",
-            "size": "Up to 35 cm",
-            "habitat": "Coastal waters, rivers",
-            "diet": "Omnivorous - algae, detritus",
-            "conservation": "Least Concern",
-            "features": "Compressed head, small eyes"
-        },
-        "Osteomugil perusii": {
-            "common": "Perusii Mullet",
-            "short": "O.PERUSII",
-            "family": "Mugilidae",
-            "size": "Up to 40 cm",
-            "habitat": "Coastal waters, estuaries",
-            "diet": "Omnivorous - plankton, algae",
-            "conservation": "Least Concern",
-            "features": "Bony head, large scales"
-        },
-        "Moolgarda tade": {
-            "common": "Tade Mullet",
-            "short": "M.TADE",
-            "family": "Mugilidae",
-            "size": "Up to 32 cm",
-            "habitat": "Freshwater and brackish",
-            "diet": "Omnivorous - insects, plants",
-            "conservation": "Least Concern",
-            "features": "Slender body, long fins"
-        },
-        "Ellochelon vaigiensis": {
-            "common": "Squaretail Mullet",
-            "short": "E.VAIGIENSIS",
-            "family": "Mugilidae",
-            "size": "Up to 28 cm",
-            "habitat": "Estuaries, mangroves",
-            "diet": "Omnivorous - small crustaceans",
-            "conservation": "Least Concern",
-            "features": "Short head, large mouth"
-        }
-    }
     
     # ============================================
     # DISPLAY SPECIES CARDS (INTERACTIVE)
