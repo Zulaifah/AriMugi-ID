@@ -377,6 +377,32 @@ ARIIDAE_SPECIES = {
 }
 
 # ============================================
+# FUNGSI UNTUK DAPATKAN GAMBAR
+# ============================================
+def get_species_image(species_name, family="ariidae"):
+    """Cari gambar species dalam folder images-ariidae atau images-mugilidae"""
+    # Bersihkan nama untuk dijadikan nama fail
+    clean_name = species_name.lower().replace(' ', '_')
+    
+    # Pilih folder berdasarkan famili
+    if family == "ariidae":
+        folders = ["images-ariidae", "images"]
+    else:
+        folders = ["images-mugilidae", "Images", "images"]
+    
+    extensions = ['.png', '.jpg', '.jpeg']
+    
+    for folder in folders:
+        for ext in extensions:
+            path = os.path.join(folder, f"{clean_name}{ext}")
+            if os.path.exists(path):
+                try:
+                    return Image.open(path)
+                except:
+                    continue
+    return None
+
+# ============================================
 # SIDEBAR
 # ============================================
 with st.sidebar:
@@ -624,7 +650,7 @@ if choice == "🏠 Home":
         """, unsafe_allow_html=True)
 
 # ============================================
-# ARIIDAE CLASSIFIER
+# ARIIDAE CLASSIFIER (DENGAN GAMBAR)
 # ============================================
 elif choice == "🐟 Ariidae Classifier":
     st.markdown("## 🐟 Ariidae Fish Classification")
@@ -678,6 +704,16 @@ elif choice == "🐟 Ariidae Classifier":
         </div>
         """, unsafe_allow_html=True)
         
+        # ============================================
+        # TAMBAHAN: PAPAR GAMBAR IKAN
+        # ============================================
+        st.markdown("### 📸 Fish Image")
+        img = get_species_image(prediction, "ariidae")
+        if img:
+            st.image(img, caption=f"{prediction} - {common}", use_container_width=True)
+        else:
+            st.info(f"📸 Image for {prediction} will be available soon")
+        
         with st.expander("📖 Species Information"):
             st.markdown(f"""
             | Property | Value |
@@ -690,7 +726,7 @@ elif choice == "🐟 Ariidae Classifier":
             """)
 
 # ============================================
-# MUGILIDAE CLASSIFIER
+# MUGILIDAE CLASSIFIER (DENGAN GAMBAR)
 # ============================================
 elif choice == "🐟 Mugilidae Classifier":
     st.markdown("## 🐟 Mugilidae Fish Classification")
@@ -777,6 +813,16 @@ elif choice == "🐟 Mugilidae Classifier":
                 """, unsafe_allow_html=True)
                 
                 st.progress(int(confidence))
+                
+                # ============================================
+                # TAMBAHAN: PAPAR GAMBAR IKAN
+                # ============================================
+                st.markdown("### 📸 Fish Image")
+                img = get_species_image(predicted_species, "mugilidae")
+                if img:
+                    st.image(img, caption=f"{predicted_species}", use_container_width=True)
+                else:
+                    st.info(f"📸 Image for {predicted_species} will be available soon")
                 
                 st.markdown("#### 📊 Species Probabilities")
                 prob_df = pd.DataFrame({
