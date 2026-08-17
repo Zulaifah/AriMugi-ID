@@ -377,6 +377,17 @@ ARIIDAE_SPECIES = {
 }
 
 # ============================================
+# MUGILIDAE NAME MAPPING (Lama → Baru)
+# ============================================
+MUGILIDAE_NAME_MAPPING = {
+    "Planiliza": "Planiliza subviridis",
+    "Moolgarda s": "Moolgarda seheli",
+    "Osteomugil": "Osteomugil perusii",
+    "Moolgarda t": "Moolgarda tade",
+    "Ellochelon": "Ellochelon vaigiensis"
+}
+
+# ============================================
 # FUNGSI UNTUK DAPATKAN GAMBAR
 # ============================================
 def get_species_image(species_name, family="ariidae"):
@@ -649,14 +660,14 @@ if choice == "🏠 Home":
         </div>
         """, unsafe_allow_html=True)
     
-        # ============================================
+    # ============================================
     # TAMBAHAN: SENARAI SPESIES (INTERACTIVE)
     # ============================================
     st.markdown("### 📋 Species Quick Look")
     st.markdown("👆 **Click on any species name** to view detailed information")
     
     # ============================================
-    # DATA SPESIES LENGKAP
+    # DATA SPESIES LENGKAP (DENGAN NAMA MUGILIDAE PENUH)
     # ============================================
     SPECIES_DETAILS = {
         # ===== ARIIDAE (12 species) =====
@@ -780,20 +791,20 @@ if choice == "🏠 Home":
             "conservation": "Least Concern",
             "features": "Rugose head, long barbels"
         },
-        # ===== MUGILIDAE (5 species) =====
-        "Planiliza": {
-            "common": "Planiliza",
-            "short": "Planiliza",
+        # ===== MUGILIDAE (5 species - NAMA PENUH) =====
+        "Planiliza subviridis": {
+            "common": "Greenback Mullet",
+            "short": "P.SUBVIRIDIS",
             "family": "Mugilidae",
             "size": "Up to 30 cm",
             "habitat": "Coastal waters, estuaries",
             "diet": "Omnivorous - algae, small invertebrates",
             "conservation": "Least Concern",
-            "features": "Elongated body, small mouth"
+            "features": "Greenish back, small mouth"
         },
-        "Moolgarda s": {
-            "common": "Moolgarda s",
-            "short": "Moolgarda s",
+        "Moolgarda seheli": {
+            "common": "Seheli Mullet",
+            "short": "M.SEHELI",
             "family": "Mugilidae",
             "size": "Up to 35 cm",
             "habitat": "Coastal waters, rivers",
@@ -801,9 +812,9 @@ if choice == "🏠 Home":
             "conservation": "Least Concern",
             "features": "Compressed head, small eyes"
         },
-        "Osteomugil": {
-            "common": "Osteomugil",
-            "short": "Osteomugil",
+        "Osteomugil perusii": {
+            "common": "Perusii Mullet",
+            "short": "O.PERUSII",
             "family": "Mugilidae",
             "size": "Up to 40 cm",
             "habitat": "Coastal waters, estuaries",
@@ -811,9 +822,9 @@ if choice == "🏠 Home":
             "conservation": "Least Concern",
             "features": "Bony head, large scales"
         },
-        "Moolgarda t": {
-            "common": "Moolgarda t",
-            "short": "Moolgarda t",
+        "Moolgarda tade": {
+            "common": "Tade Mullet",
+            "short": "M.TADE",
             "family": "Mugilidae",
             "size": "Up to 32 cm",
             "habitat": "Freshwater and brackish",
@@ -821,9 +832,9 @@ if choice == "🏠 Home":
             "conservation": "Least Concern",
             "features": "Slender body, long fins"
         },
-        "Ellochelon": {
-            "common": "Ellochelon",
-            "short": "Ellochelon",
+        "Ellochelon vaigiensis": {
+            "common": "Squaretail Mullet",
+            "short": "E.VAIGIENSIS",
             "family": "Mugilidae",
             "size": "Up to 28 cm",
             "habitat": "Estuaries, mangroves",
@@ -846,7 +857,6 @@ if choice == "🏠 Home":
         </div>
         """, unsafe_allow_html=True)
         
-        # Display each Ariidae species as a clickable button
         ariidae_species = [
             "Arius gagora", "Arius leptonotacanthus", "Arius maculatus",
             "Arius oetik", "Arius venosus", "Cryptarius truncatus",
@@ -858,7 +868,6 @@ if choice == "🏠 Home":
         for species in ariidae_species:
             details = SPECIES_DETAILS.get(species, {})
             short = details.get("short", "")
-            # Create a unique key for each expander
             with st.expander(f"🐟 {species} ({short})"):
                 col_a, col_b = st.columns(2)
                 with col_a:
@@ -877,7 +886,7 @@ if choice == "🏠 Home":
                     """)
                 st.markdown(f"**🔬 Features:** {details.get('features', 'N/A')}")
     
-    # Mugilidae species
+    # Mugilidae species (NAMA PENUH)
     with col2:
         st.markdown("""
         <div style="background: linear-gradient(135deg, #fef9e7, #fff); padding: 1rem; border-radius: 12px; border: 1px solid #f0e8d0;">
@@ -885,12 +894,18 @@ if choice == "🏠 Home":
         </div>
         """, unsafe_allow_html=True)
         
-        mugilidae_species = ["Planiliza", "Moolgarda s", "Osteomugil", "Moolgarda t", "Ellochelon"]
+        mugilidae_species = [
+            "Planiliza subviridis", 
+            "Moolgarda seheli", 
+            "Osteomugil perusii", 
+            "Moolgarda tade", 
+            "Ellochelon vaigiensis"
+        ]
         
         for species in mugilidae_species:
             details = SPECIES_DETAILS.get(species, {})
             short = details.get("short", "")
-            with st.expander(f"🐟 {species}"):
+            with st.expander(f"🐟 {species} ({short})"):
                 col_a, col_b = st.columns(2)
                 with col_a:
                     st.markdown(f"""
@@ -907,7 +922,7 @@ if choice == "🏠 Home":
                     **🌍 Conservation:** {details.get('conservation', 'N/A')}  
                     """)
                 st.markdown(f"**🔬 Features:** {details.get('features', 'N/A')}")
-        
+
 # ============================================
 # ARIIDAE CLASSIFIER (DENGAN GAMBAR)
 # ============================================
@@ -963,9 +978,6 @@ elif choice == "🐟 Ariidae Classifier":
         </div>
         """, unsafe_allow_html=True)
         
-        # ============================================
-        # TAMBAHAN: PAPAR GAMBAR IKAN
-        # ============================================
         st.markdown("### 📸 Fish Image")
         img = get_species_image(prediction, "ariidae")
         if img:
@@ -985,7 +997,7 @@ elif choice == "🐟 Ariidae Classifier":
             """)
 
 # ============================================
-# MUGILIDAE CLASSIFIER (DENGAN GAMBAR)
+# MUGILIDAE CLASSIFIER (DENGAN GAMBAR & NAME MAPPING)
 # ============================================
 elif choice == "🐟 Mugilidae Classifier":
     st.markdown("## 🐟 Mugilidae Fish Classification")
@@ -1057,15 +1069,25 @@ elif choice == "🐟 Mugilidae Classifier":
                     model_name = "ANN"
                 
                 prediction = model.predict(input_scaled)[0]
-                predicted_species = mugilidae_models['label_encoder'].inverse_transform([prediction])[0]
+                predicted_species_old = mugilidae_models['label_encoder'].inverse_transform([prediction])[0]
+                
+                # Tukar ke nama baru menggunakan mapping
+                predicted_species = MUGILIDAE_NAME_MAPPING.get(predicted_species_old, predicted_species_old)
                 
                 probabilities = model.predict_proba(input_scaled)[0]
                 confidence = np.max(probabilities) * 100
+                
+                # Dapatkan short name dari SPECIES_DETAILS
+                species_details = SPECIES_DETAILS.get(predicted_species, {})
+                short = species_details.get("short", predicted_species_old)
+                common = species_details.get("common", "")
                 
                 st.markdown(f"""
                 <div class="prediction-card-mugilidae">
                     <div style="font-size: 0.9rem; opacity: 0.8;">🎯 Predicted Species</div>
                     <div class="prediction-species">{predicted_species}</div>
+                    <div style="font-size: 1.2rem; opacity: 0.8;">{short}</div>
+                    <div style="font-size: 1rem; opacity: 0.8;">{common}</div>
                     <div style="margin-top: 0.3rem; font-size: 1rem; opacity: 0.8;">Confidence: {confidence:.1f}%</div>
                     <div class="prediction-accuracy dark">🏆 {model_name} · 77.5% Accuracy (Best)</div>
                 </div>
@@ -1073,9 +1095,6 @@ elif choice == "🐟 Mugilidae Classifier":
                 
                 st.progress(int(confidence))
                 
-                # ============================================
-                # TAMBAHAN: PAPAR GAMBAR IKAN
-                # ============================================
                 st.markdown("### 📸 Fish Image")
                 img = get_species_image(predicted_species, "mugilidae")
                 if img:
@@ -1087,7 +1106,10 @@ elif choice == "🐟 Mugilidae Classifier":
                 prob_df = pd.DataFrame({
                     'Species': mugilidae_models['label_encoder'].classes_,
                     'Probability (%)': probabilities * 100
-                }).sort_values('Probability (%)', ascending=False)
+                })
+                # Tukar nama dalam prob_df ke nama baru
+                prob_df['Species'] = prob_df['Species'].map(MUGILIDAE_NAME_MAPPING).fillna(prob_df['Species'])
+                prob_df = prob_df.sort_values('Probability (%)', ascending=False)
                 
                 st.bar_chart(prob_df.set_index('Species'))
                 
