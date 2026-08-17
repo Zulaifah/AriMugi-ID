@@ -648,7 +648,101 @@ if choice == "🏠 Home":
             <div class="metric-label">Combined Species</div>
         </div>
         """, unsafe_allow_html=True)
-
+    
+    # ============================================
+    # TAMBAHAN: SENARAI SPESIES
+    # ============================================
+    st.markdown("### 📋 Species Quick Look")
+    st.markdown("Browse all 17 species available in AriMugi ID")
+    
+    col1, col2 = st.columns(2)
+    
+    with col1:
+        st.markdown("""
+        <div style="background: linear-gradient(135deg, #f0f4ff, #fff); padding: 1rem; border-radius: 12px; border: 1px solid #e8e8e8;">
+            <h4 style="color: #667eea; margin-top: 0;">🐟 Ariidae (12 species)</h4>
+            <ul style="list-style-type: none; padding-left: 0; margin-bottom: 0;">
+                <li style="padding: 0.2rem 0; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between;">
+                    <span>Arius gagora</span>
+                    <span style="color: #888; font-size: 0.8rem;">A.GAGORA</span>
+                </li>
+                <li style="padding: 0.2rem 0; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between;">
+                    <span>Arius leptonotacanthus</span>
+                    <span style="color: #888; font-size: 0.8rem;">A.LEPTONOTACANTHUS</span>
+                </li>
+                <li style="padding: 0.2rem 0; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between;">
+                    <span>Arius maculatus</span>
+                    <span style="color: #888; font-size: 0.8rem;">A.MACULATUS</span>
+                </li>
+                <li style="padding: 0.2rem 0; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between;">
+                    <span>Arius oetik</span>
+                    <span style="color: #888; font-size: 0.8rem;">A.OETIK</span>
+                </li>
+                <li style="padding: 0.2rem 0; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between;">
+                    <span>Arius venosus</span>
+                    <span style="color: #888; font-size: 0.8rem;">A.VENOSUS</span>
+                </li>
+                <li style="padding: 0.2rem 0; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between;">
+                    <span>Cryptarius truncatus</span>
+                    <span style="color: #888; font-size: 0.8rem;">C.TRUNCATUS</span>
+                </li>
+                <li style="padding: 0.2rem 0; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between;">
+                    <span>Hexanematichthys sagor</span>
+                    <span style="color: #888; font-size: 0.8rem;">H.SAGOR</span>
+                </li>
+                <li style="padding: 0.2rem 0; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between;">
+                    <span>Nemapteryx macronotacantha</span>
+                    <span style="color: #888; font-size: 0.8rem;">N.MACRONOTACANTHA</span>
+                </li>
+                <li style="padding: 0.2rem 0; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between;">
+                    <span>Nemapteryx nenga</span>
+                    <span style="color: #888; font-size: 0.8rem;">N.NENGA</span>
+                </li>
+                <li style="padding: 0.2rem 0; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between;">
+                    <span>Osteogeneiosus militaris</span>
+                    <span style="color: #888; font-size: 0.8rem;">O.MILITARIS</span>
+                </li>
+                <li style="padding: 0.2rem 0; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between;">
+                    <span>Plicofollis argyropleuron</span>
+                    <span style="color: #888; font-size: 0.8rem;">P.ARGYROPLEURON</span>
+                </li>
+                <li style="padding: 0.2rem 0; display: flex; justify-content: space-between;">
+                    <span>Plicofollis layardi</span>
+                    <span style="color: #888; font-size: 0.8rem;">P.LAYARDI</span>
+                </li>
+            </ul>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    with col2:
+        st.markdown("""
+        <div style="background: linear-gradient(135deg, #fef9e7, #fff); padding: 1rem; border-radius: 12px; border: 1px solid #f0e8d0;">
+            <h4 style="color: #f7971e; margin-top: 0;">🐟 Mugilidae (5 species)</h4>
+            <ul style="list-style-type: none; padding-left: 0; margin-bottom: 0;">
+                <li style="padding: 0.2rem 0; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between;">
+                    <span>Planiliza</span>
+                    <span style="color: #888; font-size: 0.8rem;">Planiliza</span>
+                </li>
+                <li style="padding: 0.2rem 0; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between;">
+                    <span>Moolgarda s</span>
+                    <span style="color: #888; font-size: 0.8rem;">Moolgarda s</span>
+                </li>
+                <li style="padding: 0.2rem 0; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between;">
+                    <span>Osteomugil</span>
+                    <span style="color: #888; font-size: 0.8rem;">Osteomugil</span>
+                </li>
+                <li style="padding: 0.2rem 0; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between;">
+                    <span>Moolgarda t</span>
+                    <span style="color: #888; font-size: 0.8rem;">Moolgarda t</span>
+                </li>
+                <li style="padding: 0.2rem 0; display: flex; justify-content: space-between;">
+                    <span>Ellochelon</span>
+                    <span style="color: #888; font-size: 0.8rem;">Ellochelon</span>
+                </li>
+            </ul>
+        </div>
+        """, unsafe_allow_html=True)
+        
 # ============================================
 # ARIIDAE CLASSIFIER (DENGAN GAMBAR)
 # ============================================
