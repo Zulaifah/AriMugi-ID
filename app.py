@@ -7,8 +7,12 @@ import seaborn as sns
 import warnings
 from PIL import Image
 import os
+from datetime import datetime
 warnings.filterwarnings('ignore')
 
+# ============================================
+# PAGE CONFIG
+# ============================================
 st.set_page_config(
     page_title="AriMugi ID - Ariidae & Mugilidae Classifier",
     page_icon="🐟",
@@ -17,330 +21,691 @@ st.set_page_config(
 )
 
 # ============================================
+# SESSION STATE INITIALIZATION
+# ============================================
+if 'prediction_history' not in st.session_state:
+    st.session_state.prediction_history = []
+if 'dark_mode' not in st.session_state:
+    st.session_state.dark_mode = False
+
+# ============================================
 # CUSTOM CSS - MODERN & PROFESSIONAL
 # ============================================
-st.markdown("""
-<style>
-    /* Import Google Font */
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
-    
-    * {
-        font-family: 'Inter', sans-serif;
-    }
-    
-    /* Main Header */
-    .main-header {
-        background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
-        padding: 2.5rem 2rem;
-        border-radius: 24px;
-        text-align: center;
-        color: white;
-        margin-bottom: 2rem;
-        box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-        border: 1px solid rgba(255,255,255,0.05);
-        position: relative;
-        overflow: hidden;
-    }
-    .main-header::before {
-        content: '';
-        position: absolute;
-        top: -50%;
-        left: -50%;
-        width: 200%;
-        height: 200%;
-        background: radial-gradient(circle at 30% 50%, rgba(102,126,234,0.1) 0%, transparent 70%);
-        animation: shimmer 8s ease-in-out infinite;
-    }
-    @keyframes shimmer {
-        0%, 100% { transform: translate(0, 0); }
-        50% { transform: translate(10%, 5%); }
-    }
-    .main-header h1 {
-        font-size: 2.8rem;
-        font-weight: 800;
-        margin-bottom: 0.3rem;
-        letter-spacing: -0.5px;
-        position: relative;
-        z-index: 1;
-    }
-    .main-header h1 .highlight {
-        background: linear-gradient(135deg, #f7971e, #ffd200);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-    }
-    .main-header h1 .highlight2 {
-        background: linear-gradient(135deg, #667eea, #764ba2);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-    }
-    .main-header p {
-        font-size: 1.1rem;
-        opacity: 0.85;
-        position: relative;
-        z-index: 1;
-        font-weight: 300;
-        letter-spacing: 0.3px;
-    }
-    .header-badges {
-        display: flex;
-        justify-content: center;
-        gap: 1rem;
-        margin-top: 0.8rem;
-        flex-wrap: wrap;
-        position: relative;
-        z-index: 1;
-    }
-    .header-badge {
-        background: rgba(255,255,255,0.1);
-        backdrop-filter: blur(10px);
-        padding: 0.3rem 1.2rem;
-        border-radius: 50px;
-        font-size: 0.8rem;
-        font-weight: 500;
-        border: 1px solid rgba(255,255,255,0.1);
-        color: #fff;
-    }
-    .header-badge.gold {
-        background: linear-gradient(135deg, #f7971e, #ffd200);
-        color: #1a1a2e;
-    }
-    .header-badge.purple {
-        background: linear-gradient(135deg, #667eea, #764ba2);
-        color: #fff;
-    }
-    .header-badge.green {
-        background: linear-gradient(135deg, #11998e, #38ef7d);
-        color: #fff;
-    }
-    
-    /* Info Box */
-    .info-box {
-        background: linear-gradient(135deg, #e8f4fd 0%, #d4e9f7 100%);
-        padding: 1rem 1.5rem;
-        border-radius: 14px;
-        border-left: 5px solid #2196f3;
-        margin: 1rem 0;
-        color: #0d47a1;
-    }
-    .info-box.warning {
-        background: linear-gradient(135deg, #fef9e7 0%, #fdebd0 100%);
-        border-left-color: #f39c12;
-        color: #7d6608;
-    }
-    .info-box.success {
-        background: linear-gradient(135deg, #d5f5e3 0%, #a9dfbf 100%);
-        border-left-color: #27ae60;
-        color: #1a7a3a;
-    }
-    
-    /* Prediction Cards */
-    .prediction-card-ariidae {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        padding: 2.5rem;
-        border-radius: 24px;
-        text-align: center;
-        color: white;
-        margin: 1.5rem 0;
-        box-shadow: 0 20px 60px rgba(102,126,234,0.3);
-        animation: slideUp 0.6s ease-out;
-        border: 1px solid rgba(255,255,255,0.1);
-    }
-    .prediction-card-mugilidae {
-        background: linear-gradient(135deg, #f7971e 0%, #ffd200 100%);
-        padding: 2.5rem;
-        border-radius: 24px;
-        text-align: center;
-        color: #1a1a2e;
-        margin: 1.5rem 0;
-        box-shadow: 0 20px 60px rgba(247,151,30,0.3);
-        animation: slideUp 0.6s ease-out;
-        border: 1px solid rgba(255,255,255,0.2);
-    }
-    @keyframes slideUp {
-        from { opacity: 0; transform: translateY(30px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
-    .prediction-species {
-        font-size: 2.8rem;
-        font-weight: 800;
-        margin: 0.5rem 0;
-        letter-spacing: -0.5px;
-    }
-    .prediction-short {
-        font-size: 1.2rem;
-        opacity: 0.85;
-        font-weight: 500;
-    }
-    .prediction-common {
-        font-size: 1rem;
-        opacity: 0.8;
-        margin-top: 0.2rem;
-    }
-    .prediction-accuracy {
-        display: inline-block;
-        margin-top: 0.8rem;
-        background: rgba(255,255,255,0.15);
-        padding: 0.4rem 1.5rem;
-        border-radius: 50px;
-        font-size: 0.9rem;
-        font-weight: 600;
-        backdrop-filter: blur(10px);
-    }
-    .prediction-accuracy.dark {
-        background: rgba(0,0,0,0.1);
-    }
-    
-    /* Metric Cards */
-    .metric-card {
-        background: white;
-        padding: 1.2rem;
-        border-radius: 16px;
-        text-align: center;
-        border: 1px solid #f0f0f0;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.02);
-        transition: all 0.3s ease;
-    }
-    .metric-card:hover {
-        box-shadow: 0 5px 20px rgba(0,0,0,0.05);
-        transform: translateY(-3px);
-    }
-    .metric-value {
-        font-size: 2rem;
-        font-weight: 800;
-        background: linear-gradient(135deg, #667eea, #764ba2);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-    }
-    .metric-value.gold {
-        background: linear-gradient(135deg, #f7971e, #ffd200);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-    }
-    .metric-label {
-        font-size: 0.85rem;
-        color: #888;
-        font-weight: 500;
-        margin-top: 0.2rem;
-    }
-    
-    /* Footer */
-    .footer {
-        text-align: center;
-        color: #888;
-        margin-top: 3rem;
-        padding: 2rem;
-        border-top: 2px solid #f0f0f0;
-        font-size: 0.9rem;
-    }
-    .footer strong {
-        color: #1a1a2e;
-    }
-    .footer .footer-badges {
-        display: flex;
-        justify-content: center;
-        gap: 0.8rem;
-        margin-top: 0.5rem;
-        flex-wrap: wrap;
-    }
-    .footer-badge {
-        background: #f5f5f5;
-        padding: 0.2rem 1rem;
-        border-radius: 50px;
-        font-size: 0.75rem;
-        color: #666;
-    }
-    
-    /* Sidebar */
-    .sidebar-section {
-        background: white;
-        padding: 1rem;
-        border-radius: 12px;
-        margin-bottom: 1rem;
-        border: 1px solid #f0f0f0;
-    }
-    .sidebar-section h4 {
-        color: #1a1a2e;
-        margin-bottom: 0.5rem;
-        font-size: 0.9rem;
-        font-weight: 600;
-    }
-    .perf-item {
-        display: flex;
-        justify-content: space-between;
-        padding: 0.3rem 0;
-        font-size: 0.82rem;
-        border-bottom: 1px solid #f5f5f5;
-    }
-    .perf-item:last-child {
-        border-bottom: none;
-    }
-    .perf-acc {
-        font-weight: 600;
-        color: #27ae60;
-    }
-    .perf-best {
-        color: #f39c12;
-    }
-    
-    .species-list-sidebar {
-        max-height: 300px;
-        overflow-y: auto;
-        padding-right: 0.5rem;
-    }
-    .species-list-sidebar::-webkit-scrollbar {
-        width: 4px;
-    }
-    .species-list-sidebar::-webkit-scrollbar-thumb {
-        background: #ddd;
-        border-radius: 10px;
-    }
-    .species-item-sidebar {
-        display: flex;
-        align-items: center;
-        padding: 0.2rem 0;
-        font-size: 0.78rem;
-        border-bottom: 1px solid #f8f8f8;
-    }
-    .dot-real { 
-        display: inline-block;
-        width: 8px;
-        height: 8px;
-        border-radius: 50%;
-        background: #2ecc71;
-        margin-right: 0.5rem;
-        flex-shrink: 0;
-    }
-    .dot-sim {
-        display: inline-block;
-        width: 8px;
-        height: 8px;
-        border-radius: 50%;
-        background: #f39c12;
-        margin-right: 0.5rem;
-        flex-shrink: 0;
-    }
-    .species-tag-sidebar {
-        font-size: 0.6rem;
-        padding: 0.05rem 0.5rem;
-        border-radius: 10px;
-        margin-left: auto;
-        flex-shrink: 0;
-    }
-    .tag-real-sidebar { background: #d5f5e3; color: #1a7a3a; }
-    .tag-sim-sidebar { background: #fdebd0; color: #a04000; }
-    
-    @media (max-width: 768px) {
-        .main-header h1 { font-size: 1.8rem; }
-        .prediction-species { font-size: 2rem; }
-        .header-badges { flex-direction: column; align-items: center; }
-        .metric-value { font-size: 1.5rem; }
-    }
-</style>
-""", unsafe_allow_html=True)
+def apply_css(dark_mode=False):
+    if dark_mode:
+        st.markdown("""
+        <style>
+            @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+            
+            * { font-family: 'Inter', sans-serif; }
+            
+            .stApp {
+                background: #0f0f1a;
+                color: #ffffff;
+            }
+            
+            .main-header {
+                background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+                padding: 2.5rem 2rem;
+                border-radius: 24px;
+                text-align: center;
+                color: white;
+                margin-bottom: 2rem;
+                box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+                border: 1px solid rgba(255,255,255,0.05);
+                position: relative;
+                overflow: hidden;
+            }
+            .main-header::before {
+                content: '';
+                position: absolute;
+                top: -50%;
+                left: -50%;
+                width: 200%;
+                height: 200%;
+                background: radial-gradient(circle at 30% 50%, rgba(102,126,234,0.1) 0%, transparent 70%);
+                animation: shimmer 8s ease-in-out infinite;
+            }
+            @keyframes shimmer {
+                0%, 100% { transform: translate(0, 0); }
+                50% { transform: translate(10%, 5%); }
+            }
+            .main-header h1 {
+                font-size: 2.8rem;
+                font-weight: 800;
+                margin-bottom: 0.3rem;
+                letter-spacing: -0.5px;
+                position: relative;
+                z-index: 1;
+            }
+            .main-header h1 .highlight {
+                background: linear-gradient(135deg, #f7971e, #ffd200);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+            }
+            .main-header h1 .highlight2 {
+                background: linear-gradient(135deg, #667eea, #764ba2);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+            }
+            .main-header p {
+                font-size: 1.1rem;
+                opacity: 0.85;
+                position: relative;
+                z-index: 1;
+                font-weight: 300;
+                letter-spacing: 0.3px;
+            }
+            .header-badges {
+                display: flex;
+                justify-content: center;
+                gap: 1rem;
+                margin-top: 0.8rem;
+                flex-wrap: wrap;
+                position: relative;
+                z-index: 1;
+            }
+            .header-badge {
+                background: rgba(255,255,255,0.1);
+                backdrop-filter: blur(10px);
+                padding: 0.3rem 1.2rem;
+                border-radius: 50px;
+                font-size: 0.8rem;
+                font-weight: 500;
+                border: 1px solid rgba(255,255,255,0.1);
+                color: #fff;
+            }
+            .header-badge.gold {
+                background: linear-gradient(135deg, #f7971e, #ffd200);
+                color: #1a1a2e;
+            }
+            .header-badge.purple {
+                background: linear-gradient(135deg, #667eea, #764ba2);
+                color: #fff;
+            }
+            .header-badge.green {
+                background: linear-gradient(135deg, #11998e, #38ef7d);
+                color: #fff;
+            }
+            
+            .info-box {
+                background: linear-gradient(135deg, #1a2a3a 0%, #0d1f2f 100%);
+                padding: 1rem 1.5rem;
+                border-radius: 14px;
+                border-left: 5px solid #2196f3;
+                margin: 1rem 0;
+                color: #8ab4f8;
+            }
+            .info-box.warning {
+                background: linear-gradient(135deg, #2a1f0d 0%, #1f1508 100%);
+                border-left-color: #f39c12;
+                color: #f5c842;
+            }
+            .info-box.success {
+                background: linear-gradient(135deg, #0d2a1a 0%, #081f12 100%);
+                border-left-color: #27ae60;
+                color: #6fcf97;
+            }
+            
+            .prediction-card-ariidae {
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                padding: 2.5rem;
+                border-radius: 24px;
+                text-align: center;
+                color: white;
+                margin: 1.5rem 0;
+                box-shadow: 0 20px 60px rgba(102,126,234,0.3);
+                animation: slideUp 0.6s ease-out;
+                border: 1px solid rgba(255,255,255,0.1);
+            }
+            .prediction-card-mugilidae {
+                background: linear-gradient(135deg, #f7971e 0%, #ffd200 100%);
+                padding: 2.5rem;
+                border-radius: 24px;
+                text-align: center;
+                color: #1a1a2e;
+                margin: 1.5rem 0;
+                box-shadow: 0 20px 60px rgba(247,151,30,0.3);
+                animation: slideUp 0.6s ease-out;
+                border: 1px solid rgba(255,255,255,0.2);
+            }
+            @keyframes slideUp {
+                from { opacity: 0; transform: translateY(30px); }
+                to { opacity: 1; transform: translateY(0); }
+            }
+            .prediction-species {
+                font-size: 2.8rem;
+                font-weight: 800;
+                margin: 0.5rem 0;
+                letter-spacing: -0.5px;
+            }
+            .prediction-short {
+                font-size: 1.2rem;
+                opacity: 0.85;
+                font-weight: 500;
+            }
+            .prediction-common {
+                font-size: 1rem;
+                opacity: 0.8;
+                margin-top: 0.2rem;
+            }
+            .prediction-accuracy {
+                display: inline-block;
+                margin-top: 0.8rem;
+                background: rgba(255,255,255,0.15);
+                padding: 0.4rem 1.5rem;
+                border-radius: 50px;
+                font-size: 0.9rem;
+                font-weight: 600;
+                backdrop-filter: blur(10px);
+            }
+            .prediction-accuracy.dark {
+                background: rgba(0,0,0,0.1);
+            }
+            
+            .metric-card {
+                background: #2a2a4a;
+                padding: 1.2rem;
+                border-radius: 16px;
+                text-align: center;
+                border: 1px solid #3a3a5a;
+                box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+                transition: all 0.3s ease;
+            }
+            .metric-card:hover {
+                box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+                transform: translateY(-3px);
+            }
+            .metric-value {
+                font-size: 2rem;
+                font-weight: 800;
+                background: linear-gradient(135deg, #667eea, #764ba2);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+            }
+            .metric-value.gold {
+                background: linear-gradient(135deg, #f7971e, #ffd200);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+            }
+            .metric-label {
+                font-size: 0.85rem;
+                color: #aaa;
+                font-weight: 500;
+                margin-top: 0.2rem;
+            }
+            
+            .footer {
+                text-align: center;
+                color: #888;
+                margin-top: 3rem;
+                padding: 2rem;
+                border-top: 2px solid #3a3a5a;
+                font-size: 0.9rem;
+            }
+            .footer strong {
+                color: #fff;
+            }
+            .footer .footer-badges {
+                display: flex;
+                justify-content: center;
+                gap: 0.8rem;
+                margin-top: 0.5rem;
+                flex-wrap: wrap;
+            }
+            .footer-badge {
+                background: #2a2a4a;
+                padding: 0.2rem 1rem;
+                border-radius: 50px;
+                font-size: 0.75rem;
+                color: #aaa;
+            }
+            
+            .sidebar-section {
+                background: #2a2a4a;
+                padding: 1rem;
+                border-radius: 12px;
+                margin-bottom: 1rem;
+                border: 1px solid #3a3a5a;
+            }
+            .sidebar-section h4 {
+                color: #fff;
+                margin-bottom: 0.5rem;
+                font-size: 0.9rem;
+                font-weight: 600;
+            }
+            .perf-item {
+                display: flex;
+                justify-content: space-between;
+                padding: 0.3rem 0;
+                font-size: 0.82rem;
+                border-bottom: 1px solid #3a3a5a;
+                color: #ccc;
+            }
+            .perf-item:last-child {
+                border-bottom: none;
+            }
+            .perf-acc {
+                font-weight: 600;
+                color: #6fcf97;
+            }
+            .perf-best {
+                color: #f39c12;
+            }
+            
+            .species-list-sidebar {
+                max-height: 300px;
+                overflow-y: auto;
+                padding-right: 0.5rem;
+            }
+            .species-list-sidebar::-webkit-scrollbar {
+                width: 4px;
+            }
+            .species-list-sidebar::-webkit-scrollbar-thumb {
+                background: #555;
+                border-radius: 10px;
+            }
+            .species-item-sidebar {
+                display: flex;
+                align-items: center;
+                padding: 0.2rem 0;
+                font-size: 0.78rem;
+                border-bottom: 1px solid #3a3a5a;
+                color: #ccc;
+            }
+            .dot-real { 
+                display: inline-block;
+                width: 8px;
+                height: 8px;
+                border-radius: 50%;
+                background: #2ecc71;
+                margin-right: 0.5rem;
+                flex-shrink: 0;
+            }
+            .dot-sim {
+                display: inline-block;
+                width: 8px;
+                height: 8px;
+                border-radius: 50%;
+                background: #f39c12;
+                margin-right: 0.5rem;
+                flex-shrink: 0;
+            }
+            .species-tag-sidebar {
+                font-size: 0.6rem;
+                padding: 0.05rem 0.5rem;
+                border-radius: 10px;
+                margin-left: auto;
+                flex-shrink: 0;
+            }
+            .tag-real-sidebar { background: #1a5a2a; color: #6fcf97; }
+            .tag-sim-sidebar { background: #5a3a1a; color: #f5c842; }
+            
+            .stButton button {
+                background: linear-gradient(135deg, #667eea, #764ba2) !important;
+                color: white !important;
+                border: none !important;
+                border-radius: 12px !important;
+                padding: 0.5rem 1.5rem !important;
+                font-weight: 600 !important;
+                transition: all 0.3s ease !important;
+            }
+            .stButton button:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 8px 25px rgba(102,126,234,0.4) !important;
+            }
+            
+            .stSelectbox label, .stNumberInput label {
+                color: #ccc !important;
+            }
+            
+            @media (max-width: 768px) {
+                .main-header h1 { font-size: 1.8rem; }
+                .prediction-species { font-size: 2rem; }
+                .header-badges { flex-direction: column; align-items: center; }
+                .metric-value { font-size: 1.5rem; }
+                .stButton button { width: 100% !important; }
+            }
+        </style>
+        """, unsafe_allow_html=True)
+    else:
+        st.markdown("""
+        <style>
+            @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+            
+            * {
+                font-family: 'Inter', sans-serif;
+            }
+            
+            .main-header {
+                background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+                padding: 2.5rem 2rem;
+                border-radius: 24px;
+                text-align: center;
+                color: white;
+                margin-bottom: 2rem;
+                box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+                border: 1px solid rgba(255,255,255,0.05);
+                position: relative;
+                overflow: hidden;
+            }
+            .main-header::before {
+                content: '';
+                position: absolute;
+                top: -50%;
+                left: -50%;
+                width: 200%;
+                height: 200%;
+                background: radial-gradient(circle at 30% 50%, rgba(102,126,234,0.1) 0%, transparent 70%);
+                animation: shimmer 8s ease-in-out infinite;
+            }
+            @keyframes shimmer {
+                0%, 100% { transform: translate(0, 0); }
+                50% { transform: translate(10%, 5%); }
+            }
+            .main-header h1 {
+                font-size: 2.8rem;
+                font-weight: 800;
+                margin-bottom: 0.3rem;
+                letter-spacing: -0.5px;
+                position: relative;
+                z-index: 1;
+            }
+            .main-header h1 .highlight {
+                background: linear-gradient(135deg, #f7971e, #ffd200);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+            }
+            .main-header h1 .highlight2 {
+                background: linear-gradient(135deg, #667eea, #764ba2);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+            }
+            .main-header p {
+                font-size: 1.1rem;
+                opacity: 0.85;
+                position: relative;
+                z-index: 1;
+                font-weight: 300;
+                letter-spacing: 0.3px;
+            }
+            .header-badges {
+                display: flex;
+                justify-content: center;
+                gap: 1rem;
+                margin-top: 0.8rem;
+                flex-wrap: wrap;
+                position: relative;
+                z-index: 1;
+            }
+            .header-badge {
+                background: rgba(255,255,255,0.1);
+                backdrop-filter: blur(10px);
+                padding: 0.3rem 1.2rem;
+                border-radius: 50px;
+                font-size: 0.8rem;
+                font-weight: 500;
+                border: 1px solid rgba(255,255,255,0.1);
+                color: #fff;
+            }
+            .header-badge.gold {
+                background: linear-gradient(135deg, #f7971e, #ffd200);
+                color: #1a1a2e;
+            }
+            .header-badge.purple {
+                background: linear-gradient(135deg, #667eea, #764ba2);
+                color: #fff;
+            }
+            .header-badge.green {
+                background: linear-gradient(135deg, #11998e, #38ef7d);
+                color: #fff;
+            }
+            
+            .info-box {
+                background: linear-gradient(135deg, #e8f4fd 0%, #d4e9f7 100%);
+                padding: 1rem 1.5rem;
+                border-radius: 14px;
+                border-left: 5px solid #2196f3;
+                margin: 1rem 0;
+                color: #0d47a1;
+            }
+            .info-box.warning {
+                background: linear-gradient(135deg, #fef9e7 0%, #fdebd0 100%);
+                border-left-color: #f39c12;
+                color: #7d6608;
+            }
+            .info-box.success {
+                background: linear-gradient(135deg, #d5f5e3 0%, #a9dfbf 100%);
+                border-left-color: #27ae60;
+                color: #1a7a3a;
+            }
+            
+            .prediction-card-ariidae {
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                padding: 2.5rem;
+                border-radius: 24px;
+                text-align: center;
+                color: white;
+                margin: 1.5rem 0;
+                box-shadow: 0 20px 60px rgba(102,126,234,0.3);
+                animation: slideUp 0.6s ease-out;
+                border: 1px solid rgba(255,255,255,0.1);
+            }
+            .prediction-card-mugilidae {
+                background: linear-gradient(135deg, #f7971e 0%, #ffd200 100%);
+                padding: 2.5rem;
+                border-radius: 24px;
+                text-align: center;
+                color: #1a1a2e;
+                margin: 1.5rem 0;
+                box-shadow: 0 20px 60px rgba(247,151,30,0.3);
+                animation: slideUp 0.6s ease-out;
+                border: 1px solid rgba(255,255,255,0.2);
+            }
+            @keyframes slideUp {
+                from { opacity: 0; transform: translateY(30px); }
+                to { opacity: 1; transform: translateY(0); }
+            }
+            .prediction-species {
+                font-size: 2.8rem;
+                font-weight: 800;
+                margin: 0.5rem 0;
+                letter-spacing: -0.5px;
+            }
+            .prediction-short {
+                font-size: 1.2rem;
+                opacity: 0.85;
+                font-weight: 500;
+            }
+            .prediction-common {
+                font-size: 1rem;
+                opacity: 0.8;
+                margin-top: 0.2rem;
+            }
+            .prediction-accuracy {
+                display: inline-block;
+                margin-top: 0.8rem;
+                background: rgba(255,255,255,0.15);
+                padding: 0.4rem 1.5rem;
+                border-radius: 50px;
+                font-size: 0.9rem;
+                font-weight: 600;
+                backdrop-filter: blur(10px);
+            }
+            .prediction-accuracy.dark {
+                background: rgba(0,0,0,0.1);
+            }
+            
+            .metric-card {
+                background: white;
+                padding: 1.2rem;
+                border-radius: 16px;
+                text-align: center;
+                border: 1px solid #f0f0f0;
+                box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+                transition: all 0.3s ease;
+            }
+            .metric-card:hover {
+                box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+                transform: translateY(-3px);
+            }
+            .metric-value {
+                font-size: 2rem;
+                font-weight: 800;
+                background: linear-gradient(135deg, #667eea, #764ba2);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+            }
+            .metric-value.gold {
+                background: linear-gradient(135deg, #f7971e, #ffd200);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+            }
+            .metric-label {
+                font-size: 0.85rem;
+                color: #888;
+                font-weight: 500;
+                margin-top: 0.2rem;
+            }
+            
+            .footer {
+                text-align: center;
+                color: #888;
+                margin-top: 3rem;
+                padding: 2rem;
+                border-top: 2px solid #f0f0f0;
+                font-size: 0.9rem;
+            }
+            .footer strong {
+                color: #1a1a2e;
+            }
+            .footer .footer-badges {
+                display: flex;
+                justify-content: center;
+                gap: 0.8rem;
+                margin-top: 0.5rem;
+                flex-wrap: wrap;
+            }
+            .footer-badge {
+                background: #f5f5f5;
+                padding: 0.2rem 1rem;
+                border-radius: 50px;
+                font-size: 0.75rem;
+                color: #666;
+            }
+            
+            .sidebar-section {
+                background: white;
+                padding: 1rem;
+                border-radius: 12px;
+                margin-bottom: 1rem;
+                border: 1px solid #f0f0f0;
+            }
+            .sidebar-section h4 {
+                color: #1a1a2e;
+                margin-bottom: 0.5rem;
+                font-size: 0.9rem;
+                font-weight: 600;
+            }
+            .perf-item {
+                display: flex;
+                justify-content: space-between;
+                padding: 0.3rem 0;
+                font-size: 0.82rem;
+                border-bottom: 1px solid #f5f5f5;
+            }
+            .perf-item:last-child {
+                border-bottom: none;
+            }
+            .perf-acc {
+                font-weight: 600;
+                color: #27ae60;
+            }
+            .perf-best {
+                color: #f39c12;
+            }
+            
+            .species-list-sidebar {
+                max-height: 300px;
+                overflow-y: auto;
+                padding-right: 0.5rem;
+            }
+            .species-list-sidebar::-webkit-scrollbar {
+                width: 4px;
+            }
+            .species-list-sidebar::-webkit-scrollbar-thumb {
+                background: #ddd;
+                border-radius: 10px;
+            }
+            .species-item-sidebar {
+                display: flex;
+                align-items: center;
+                padding: 0.2rem 0;
+                font-size: 0.78rem;
+                border-bottom: 1px solid #f8f8f8;
+            }
+            .dot-real { 
+                display: inline-block;
+                width: 8px;
+                height: 8px;
+                border-radius: 50%;
+                background: #2ecc71;
+                margin-right: 0.5rem;
+                flex-shrink: 0;
+            }
+            .dot-sim {
+                display: inline-block;
+                width: 8px;
+                height: 8px;
+                border-radius: 50%;
+                background: #f39c12;
+                margin-right: 0.5rem;
+                flex-shrink: 0;
+            }
+            .species-tag-sidebar {
+                font-size: 0.6rem;
+                padding: 0.05rem 0.5rem;
+                border-radius: 10px;
+                margin-left: auto;
+                flex-shrink: 0;
+            }
+            .tag-real-sidebar { background: #d5f5e3; color: #1a7a3a; }
+            .tag-sim-sidebar { background: #fdebd0; color: #a04000; }
+            
+            .stButton button {
+                background: linear-gradient(135deg, #667eea, #764ba2) !important;
+                color: white !important;
+                border: none !important;
+                border-radius: 12px !important;
+                padding: 0.5rem 1.5rem !important;
+                font-weight: 600 !important;
+                transition: all 0.3s ease !important;
+            }
+            .stButton button:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 8px 25px rgba(102,126,234,0.4) !important;
+            }
+            
+            @media (max-width: 768px) {
+                .main-header h1 { font-size: 1.8rem; }
+                .prediction-species { font-size: 2rem; }
+                .header-badges { flex-direction: column; align-items: center; }
+                .metric-value { font-size: 1.5rem; }
+                .stButton button { width: 100% !important; }
+            }
+        </style>
+        """, unsafe_allow_html=True)
+
+# Apply CSS
+apply_css(st.session_state.dark_mode)
 
 # ============================================
 # HEADER
@@ -568,12 +933,11 @@ SPECIES_DETAILS = {
 # ============================================
 # FUNGSI UNTUK DAPATKAN GAMBAR
 # ============================================
+@st.cache_data
 def get_species_image(species_name, family="ariidae"):
     """Cari gambar species dalam folder images-ariidae atau images-mugilidae"""
-    # Bersihkan nama untuk dijadikan nama fail
     clean_name = species_name.lower().replace(' ', '_')
     
-    # Pilih folder berdasarkan famili
     if family == "ariidae":
         folders = ["images-ariidae", "images"]
     else:
@@ -592,75 +956,89 @@ def get_species_image(species_name, family="ariidae"):
     return None
 
 # ============================================
-# SIDEBAR
+# FUNGSI VALIDASI INPUT
 # ============================================
-with st.sidebar:
-    st.markdown("### 🧭 Navigation")
+def validate_ariidae_inputs(head, body, eye, snout, maxillary, mandibullary, mental, dorsal, anal):
+    """Validate input values for Ariidae"""
+    errors = []
+    if head <= 0 or head > 200:
+        errors.append("Head Length must be between 0 and 200 mm")
+    if body <= 0 or body > 150:
+        errors.append("Body Depth must be between 0 and 150 mm")
+    if eye <= 0 or eye > 30:
+        errors.append("Eye Diameter must be between 0 and 30 mm")
+    if snout <= 0 or snout > 50:
+        errors.append("Snout Length must be between 0 and 50 mm")
+    if maxillary <= 0 or maxillary > 100:
+        errors.append("Maxillary Barbell must be between 0 and 100 mm")
+    if mandibullary <= 0 or mandibullary > 80:
+        errors.append("Mandibullary Barbell must be between 0 and 80 mm")
+    if mental <= 0 or mental > 50:
+        errors.append("Mental Barbell must be between 0 and 50 mm")
+    if dorsal < 0 or dorsal > 50:
+        errors.append("Dorsal Fin Ray must be between 0 and 50")
+    if anal < 0 or anal > 40:
+        errors.append("Anal Fin Ray must be between 0 and 40")
     
-    choice = st.radio(
-        "",
-        [
-            "🏠 Home",
-            "🐟 Ariidae Classifier",
-            "🐟 Mugilidae Classifier (31 Features)",
-            "⚖️ Compare Models"
-        ],
-        index=0,
-        format_func=lambda x: x.replace("🏠 ", "").replace("🐟 ", "").replace("⚖️ ", "")
-    )
-    
-    st.markdown("---")
-    
-    # Model Performance
-    st.markdown("""
-    <div class="sidebar-section">
-        <h4>📊 Model Performance</h4>
-        <div class="perf-item">
-            <span>🌿 CART</span>
-            <span class="perf-acc">69.2%</span>
-        </div>
-        <div class="perf-item">
-            <span>⚡ SVM</span>
-            <span class="perf-acc">92.3%</span>
-        </div>
-        <div class="perf-item">
-            <span>📊 KNN</span>
-            <span class="perf-acc">88.5%</span>
-        </div>
-        <div class="perf-item" style="border-bottom: 2px solid #f39c12; padding-bottom: 0.5rem;">
-            <span>🏆 HYBRID</span>
-            <span class="perf-acc perf-best">92.3%</span>
-        </div>
-        <div style="margin-top: 0.5rem; font-size: 0.8rem; color: #888;">
-            <span>🏆 ANN-GWO: </span>
-            <span style="color: #f39c12; font-weight: 600;">Higher Accuracy with 31 Features</span>
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
-    
-    # Species List
-    st.markdown("""
-    <div class="sidebar-section">
-        <h4>🐟 17 Species</h4>
-        <div class="species-list-sidebar">
-    """, unsafe_allow_html=True)
-    
-    for name in list(ARIIDAE_SPECIES.keys())[:6]:
-        st.markdown(f"""
-        <div class="species-item-sidebar">
-            <span class="dot-real"></span>
-            <span>{name.split()[1] if len(name.split()) > 1 else name[:10]}</span>
-            <span class="species-tag-sidebar tag-real-sidebar">Real</span>
-        </div>
-        """, unsafe_allow_html=True)
-    
-    st.markdown("""
-        <div style="font-size:0.7rem;color:#999;margin-top:0.3rem;">+6 more species</div>
-    </div>
-    """, unsafe_allow_html=True)
-    
-    st.markdown("---")
-    st.caption("🎓 Final Year Project | Universiti Malaysia Terengganu")
+    if errors:
+        return False, errors
+    return True, []
+
+# ============================================
+# FUNGSI EXPORT HASIL
+# ============================================
+def export_prediction_results(prediction, confidence, model_type, features_dict):
+    """Export prediction results to CSV"""
+    results = {
+        'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+        'predicted_species': prediction,
+        'confidence': confidence,
+        'model_type': model_type,
+        **features_dict
+    }
+    df = pd.DataFrame([results])
+    return df.to_csv(index=False)
+
+# ============================================
+# FUNGSI BATCH PREDICTION
+# ============================================
+def batch_prediction_ariidae(uploaded_file):
+    """Predict multiple samples from CSV file"""
+    try:
+        df = pd.read_csv(uploaded_file)
+        required_cols = ['HeadLength', 'BodyDepth', 'EyeDiameter', 'SnoutLength', 
+                        'MaxillaryBarbell', 'MandibullaryBarbell', 'MentalBarbell', 
+                        'DorsalFinRay', 'AnalFinRay']
+        
+        missing_cols = [col for col in required_cols if col not in df.columns]
+        if missing_cols:
+            return None, f"Missing columns: {missing_cols}"
+        
+        predictions = []
+        for _, row in df.iterrows():
+            features = row[required_cols].values.reshape(1, -1)
+            pred = predict_ariidae(features)
+            predictions.append(pred)
+        
+        df['Predicted_Species'] = predictions
+        return df, None
+    except Exception as e:
+        return None, f"Error in batch prediction: {e}"
+
+def create_template_csv():
+    """Create a CSV template for batch prediction"""
+    df = pd.DataFrame({
+        'HeadLength': [45.0],
+        'BodyDepth': [28.0],
+        'EyeDiameter': [6.0],
+        'SnoutLength': [12.0],
+        'MaxillaryBarbell': [35.0],
+        'MandibullaryBarbell': [25.0],
+        'MentalBarbell': [8.0],
+        'DorsalFinRay': [18],
+        'AnalFinRay': [14]
+    })
+    return df.to_csv(index=False)
 
 # ============================================
 # LOAD MODELS
@@ -674,11 +1052,16 @@ def load_ariidae_models():
         try:
             selector = joblib.load('feature_selector_real.pkl')
             pca = joblib.load('pca_hybrid_real.pkl')
-        except:
+        except FileNotFoundError:
             selector = None
             pca = None
+            st.warning("⚠️ Feature selector or PCA not found, using fallback method")
         return scaler, scaler_hybrid, svm_hybrid, selector, pca, True
-    except:
+    except FileNotFoundError as e:
+        st.error(f"❌ Model file not found: {e.filename}")
+        return None, None, None, None, None, False
+    except Exception as e:
+        st.error(f"❌ Error loading models: {e}")
         return None, None, None, None, None, False
 
 @st.cache_resource
@@ -743,6 +1126,98 @@ def predict_ariidae(features):
         return "Arius maculatus"
     except:
         return "Arius maculatus"
+
+# ============================================
+# SIDEBAR
+# ============================================
+with st.sidebar:
+    st.markdown("### 🧭 Navigation")
+    
+    choice = st.radio(
+        "",
+        [
+            "🏠 Home",
+            "🐟 Ariidae Classifier",
+            "🐟 Mugilidae Classifier (31 Features)",
+            "📊 Batch Prediction",
+            "⚖️ Compare Models",
+            "📜 Prediction History"
+        ],
+        index=0,
+        format_func=lambda x: x.replace("🏠 ", "").replace("🐟 ", "").replace("📊 ", "").replace("⚖️ ", "").replace("📜 ", "")
+    )
+    
+    st.markdown("---")
+    
+    # Dark Mode Toggle
+    dark_mode = st.toggle("🌙 Dark Mode", value=st.session_state.dark_mode)
+    if dark_mode != st.session_state.dark_mode:
+        st.session_state.dark_mode = dark_mode
+        st.rerun()
+    
+    st.markdown("---")
+    
+    # Model Performance
+    st.markdown("""
+    <div class="sidebar-section">
+        <h4>📊 Model Performance</h4>
+        <div class="perf-item">
+            <span>🌿 CART</span>
+            <span class="perf-acc">69.2%</span>
+        </div>
+        <div class="perf-item">
+            <span>⚡ SVM</span>
+            <span class="perf-acc">92.3%</span>
+        </div>
+        <div class="perf-item">
+            <span>📊 KNN</span>
+            <span class="perf-acc">88.5%</span>
+        </div>
+        <div class="perf-item" style="border-bottom: 2px solid #f39c12; padding-bottom: 0.5rem;">
+            <span>🏆 HYBRID</span>
+            <span class="perf-acc perf-best">92.3%</span>
+        </div>
+        <div style="margin-top: 0.5rem; font-size: 0.8rem; color: #888;">
+            <span>🏆 ANN-GWO: </span>
+            <span style="color: #f39c12; font-weight: 600;">Higher Accuracy with 31 Features</span>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    # Species List
+    st.markdown("""
+    <div class="sidebar-section">
+        <h4>🐟 17 Species</h4>
+        <div class="species-list-sidebar">
+    """, unsafe_allow_html=True)
+    
+    for name in list(ARIIDAE_SPECIES.keys())[:6]:
+        st.markdown(f"""
+        <div class="species-item-sidebar">
+            <span class="dot-real"></span>
+            <span>{name.split()[1] if len(name.split()) > 1 else name[:10]}</span>
+            <span class="species-tag-sidebar tag-real-sidebar">Real</span>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    st.markdown("""
+        <div style="font-size:0.7rem;color:#999;margin-top:0.3rem;">+6 more species</div>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    st.markdown("---")
+    
+    # Download Template
+    if st.button("📥 Download CSV Template"):
+        csv = create_template_csv()
+        st.download_button(
+            label="Download Template",
+            data=csv,
+            file_name="ariidae_template.csv",
+            mime="text/csv"
+        )
+    
+    st.caption("🎓 Final Year Project | Universiti Malaysia Terengganu")
 
 # ============================================
 # HOME PAGE
@@ -840,15 +1315,10 @@ if choice == "🏠 Home":
         </div>
         """, unsafe_allow_html=True)
     
-    # ============================================
-    # TAMBAHAN: SENARAI SPESIES (INTERACTIVE)
-    # ============================================
+    # Species Quick Look
     st.markdown("### 📋 Species Quick Look")
     st.markdown("👆 **Click on any species name** to view detailed information")
     
-    # ============================================
-    # DISPLAY SPECIES CARDS (INTERACTIVE)
-    # ============================================
     col1, col2 = st.columns(2)
     
     # Ariidae species
@@ -888,7 +1358,7 @@ if choice == "🏠 Home":
                     """)
                 st.markdown(f"**🔬 Features:** {details.get('features', 'N/A')}")
     
-    # Mugilidae species (NAMA PENUH)
+    # Mugilidae species
     with col2:
         st.markdown("""
         <div style="background: linear-gradient(135deg, #fef9e7, #fff); padding: 1rem; border-radius: 12px; border: 1px solid #f0e8d0;">
@@ -926,7 +1396,7 @@ if choice == "🏠 Home":
                 st.markdown(f"**🔬 Features:** {details.get('features', 'N/A')}")
 
 # ============================================
-# ARIIDAE CLASSIFIER (DENGAN GAMBAR)
+# ARIIDAE CLASSIFIER
 # ============================================
 elif choice == "🐟 Ariidae Classifier":
     st.markdown("## 🐟 Ariidae Fish Classification")
@@ -963,43 +1433,74 @@ elif choice == "🐟 Ariidae Classifier":
         predict_clicked = st.button("🔍 Identify Species", key="btn_ariidae", use_container_width=True)
     
     if predict_clicked:
-        input_data = np.array([[head, body, eye, snout, maxillary, mandibullary, mental, dorsal, anal]])
-        prediction = predict_ariidae(input_data)
+        is_valid, errors = validate_ariidae_inputs(head, body, eye, snout, maxillary, mandibullary, mental, dorsal, anal)
         
-        species_info = ARIIDAE_SPECIES.get(prediction, {})
-        common = species_info.get("common", "")
-        short = species_info.get("short", "")
-        
-        st.markdown(f"""
-        <div class="prediction-card-ariidae">
-            <div style="font-size: 0.9rem; opacity: 0.8;">🎯 Predicted Species</div>
-            <div class="prediction-species">{prediction}</div>
-            <div class="prediction-short">{short}</div>
-            <div class="prediction-common">{common}</div>
-            <div class="prediction-accuracy">🏆 Hybrid CART-SVM · 92.3% Accuracy</div>
-        </div>
-        """, unsafe_allow_html=True)
-        
-        st.markdown("### 📸 Fish Image")
-        img = get_species_image(prediction, "ariidae")
-        if img:
-            st.image(img, caption=f"{prediction} - {common}", use_container_width=True)
+        if not is_valid:
+            for error in errors:
+                st.error(f"❌ {error}")
         else:
-            st.info(f"📸 Image for {prediction} will be available soon")
-        
-        with st.expander("📖 Species Information"):
+            input_data = np.array([[head, body, eye, snout, maxillary, mandibullary, mental, dorsal, anal]])
+            prediction = predict_ariidae(input_data)
+            
+            species_info = ARIIDAE_SPECIES.get(prediction, {})
+            common = species_info.get("common", "")
+            short = species_info.get("short", "")
+            
+            # Simpan ke histori
+            st.session_state.prediction_history.append({
+                'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+                'species': prediction,
+                'common_name': common,
+                'confidence': '92.3%',
+                'model': 'Hybrid CART-SVM',
+                'family': 'Ariidae'
+            })
+            
             st.markdown(f"""
-            | Property | Value |
-            |----------|-------|
-            | **Scientific Name** | {prediction} |
-            | **Common Name** | {common} |
-            | **Short Code** | {short} |
-            | **Family** | Ariidae |
-            | **Classification Method** | Hybrid CART-SVM |
-            """)
+            <div class="prediction-card-ariidae">
+                <div style="font-size: 0.9rem; opacity: 0.8;">🎯 Predicted Species</div>
+                <div class="prediction-species">{prediction}</div>
+                <div class="prediction-short">{short}</div>
+                <div class="prediction-common">{common}</div>
+                <div class="prediction-accuracy">🏆 Hybrid CART-SVM · 92.3% Accuracy</div>
+            </div>
+            """, unsafe_allow_html=True)
+            
+            st.markdown("### 📸 Fish Image")
+            img = get_species_image(prediction, "ariidae")
+            if img:
+                st.image(img, caption=f"{prediction} - {common}", use_container_width=True)
+            else:
+                st.info(f"📸 Image for {prediction} will be available soon")
+            
+            # Export button
+            features_dict = {
+                'HeadLength': head, 'BodyDepth': body, 'EyeDiameter': eye,
+                'SnoutLength': snout, 'MaxillaryBarbell': maxillary,
+                'MandibullaryBarbell': mandibullary, 'MentalBarbell': mental,
+                'DorsalFinRay': dorsal, 'AnalFinRay': anal
+            }
+            csv = export_prediction_results(prediction, '92.3%', 'Hybrid CART-SVM', features_dict)
+            st.download_button(
+                label="📥 Download Result CSV",
+                data=csv,
+                file_name=f"prediction_{prediction}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv",
+                mime="text/csv"
+            )
+            
+            with st.expander("📖 Species Information"):
+                st.markdown(f"""
+                | Property | Value |
+                |----------|-------|
+                | **Scientific Name** | {prediction} |
+                | **Common Name** | {common} |
+                | **Short Code** | {short} |
+                | **Family** | Ariidae |
+                | **Classification Method** | Hybrid CART-SVM |
+                """)
 
 # ============================================
-# MUGILIDAE CLASSIFIER (31 FEATURES - DENGAN NAMA TRUSS AB, AC, AD, ...)
+# MUGILIDAE CLASSIFIER (31 FEATURES)
 # ============================================
 elif choice == "🐟 Mugilidae Classifier (31 Features)":
     st.markdown("## 🐟 Mugilidae Fish Classification")
@@ -1025,9 +1526,7 @@ elif choice == "🐟 Mugilidae Classifier (31 Features)":
         st.markdown("### 📏 Enter 31 Morphological Measurements")
         st.caption("📌 Meristic counts are integers. All other measurements in mm.")
         
-        # ============================================
         # ROW 1: MERISTIC FEATURES (6)
-        # ============================================
         st.markdown("**📏 Meristic Features**")
         col1, col2, col3 = st.columns(3)
         with col1:
@@ -1040,9 +1539,7 @@ elif choice == "🐟 Mugilidae Classifier (31 Features)":
             nv = st.number_input("NV_Total", 0.0, 50.0, 6.0, 1.0, key="nv_31")
             na = st.number_input("NA_Total", 0.0, 50.0, 10.0, 1.0, key="na_31")
         
-        # ============================================
         # ROW 2: MORPHOMETRIC FEATURES (4)
-        # ============================================
         st.markdown("**📐 Morphometric Features (mm)**")
         col1, col2 = st.columns(2)
         with col1:
@@ -1052,13 +1549,10 @@ elif choice == "🐟 Mugilidae Classifier (31 Features)":
             bh = st.number_input("BH (Body Height)", 0.0, 300.0, 45.0, 5.0, key="bh_31")
             hl = st.number_input("HL (Head Length)", 0.0, 300.0, 40.0, 5.0, key="hl_31")
         
-        # ============================================
-        # ROW 3-5: TRUSS NETWORK FEATURES (21) - NAMA SEBENAR
-        # ============================================
+        # ROW 3-5: TRUSS NETWORK FEATURES (21)
         st.markdown("**📐 Truss Network Features (mm)**")
         st.caption("AB, AC, AD, BC, BD, CD, CE, CF, DE, DF, EF, EG, EH, FG, FH, GH, GI, GJ, HI, HJ, IJ")
         
-        # Row 1: AB, AC, AD, BC, BD, CD, CE
         col1, col2, col3 = st.columns(3)
         with col1:
             truss_AB = st.number_input("AB", 0.0, 500.0, 8.0, 1.0, key="ab_31")
@@ -1071,7 +1565,6 @@ elif choice == "🐟 Mugilidae Classifier (31 Features)":
         with col3:
             truss_CE = st.number_input("CE", 0.0, 500.0, 45.0, 1.0, key="ce_31")
         
-        # Row 2: CF, DE, DF, EF, EG, EH, FG
         col1, col2, col3 = st.columns(3)
         with col1:
             truss_CF = st.number_input("CF", 0.0, 500.0, 40.0, 1.0, key="cf_31")
@@ -1084,7 +1577,6 @@ elif choice == "🐟 Mugilidae Classifier (31 Features)":
         with col3:
             truss_FG = st.number_input("FG", 0.0, 500.0, 60.0, 1.0, key="fg_31")
         
-        # Row 3: FH, GH, GI, GJ, HI, HJ, IJ
         col1, col2, col3 = st.columns(3)
         with col1:
             truss_FH = st.number_input("FH", 0.0, 500.0, 45.0, 1.0, key="fh_31")
@@ -1097,34 +1589,27 @@ elif choice == "🐟 Mugilidae Classifier (31 Features)":
         with col3:
             truss_IJ = st.number_input("IJ", 0.0, 500.0, 18.0, 1.0, key="ij_31")
         
-        # ============================================
         # MODEL SELECTION
-        # ============================================
         model_choice = st.selectbox(
             "🧠 Select Model for Prediction",
             ["ANN-GWO 🏆 (Recommended)", "ANN", "ANN-PSO", "ANN-GA"],
             index=0
         )
         
-        # ============================================
-        # PREDICTION BUTTON
-        # ============================================
         col_btn1, col_btn2, col_btn3 = st.columns([1, 2, 1])
         with col_btn2:
             predict_clicked = st.button("🔍 Identify Species", key="btn_mugilidae_31", use_container_width=True)
         
         if predict_clicked:
             try:
-                # Kumpulkan 31 input values
                 input_values = [
-                    nd1, nd2, np_val, nc, nv, na,                              # Meristic (6)
-                    sl, pl, bh, hl,                                            # Morphometric (4)
-                    truss_AB, truss_AC, truss_AD, truss_BC, truss_BD, truss_CD, truss_CE,  # Truss (7)
-                    truss_CF, truss_DE, truss_DF, truss_EF, truss_EG, truss_EH, truss_FG,  # Truss (7)
-                    truss_FH, truss_GH, truss_GI, truss_GJ, truss_HI, truss_HJ, truss_IJ   # Truss (7)
-                ]  # Total: 6 + 4 + 7 + 7 + 7 = 31
+                    nd1, nd2, np_val, nc, nv, na,
+                    sl, pl, bh, hl,
+                    truss_AB, truss_AC, truss_AD, truss_BC, truss_BD, truss_CD, truss_CE,
+                    truss_CF, truss_DE, truss_DF, truss_EF, truss_EG, truss_EH, truss_FG,
+                    truss_FH, truss_GH, truss_GI, truss_GJ, truss_HI, truss_HJ, truss_IJ
+                ]
                 
-                # Pastikan jumlah input = 31
                 if len(input_values) != 31:
                     st.error(f"❌ Expected 31 features, got {len(input_values)}")
                 else:
@@ -1146,17 +1631,24 @@ elif choice == "🐟 Mugilidae Classifier (31 Features)":
                     
                     prediction = model.predict(input_scaled)[0]
                     predicted_species_old = mugilidae_models['label_encoder'].inverse_transform([prediction])[0]
-                    
-                    # Tukar ke nama baru menggunakan mapping
                     predicted_species = MUGILIDAE_NAME_MAPPING.get(predicted_species_old, predicted_species_old)
                     
                     probabilities = model.predict_proba(input_scaled)[0]
                     confidence = np.max(probabilities) * 100
                     
-                    # Dapatkan short name dari SPECIES_DETAILS
                     species_details = SPECIES_DETAILS.get(predicted_species, {})
                     short = species_details.get("short", predicted_species_old)
                     common = species_details.get("common", "")
+                    
+                    # Simpan ke histori
+                    st.session_state.prediction_history.append({
+                        'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+                        'species': predicted_species,
+                        'common_name': common,
+                        'confidence': f'{confidence:.1f}%',
+                        'model': model_name,
+                        'family': 'Mugilidae'
+                    })
                     
                     st.markdown(f"""
                     <div class="prediction-card-mugilidae">
@@ -1183,14 +1675,81 @@ elif choice == "🐟 Mugilidae Classifier (31 Features)":
                         'Species': mugilidae_models['label_encoder'].classes_,
                         'Probability (%)': probabilities * 100
                     })
-                    # Tukar nama dalam prob_df ke nama baru
                     prob_df['Species'] = prob_df['Species'].map(MUGILIDAE_NAME_MAPPING).fillna(prob_df['Species'])
                     prob_df = prob_df.sort_values('Probability (%)', ascending=False)
                     
                     st.bar_chart(prob_df.set_index('Species'))
                     
+                    # Export button
+                    features_dict = {
+                        'ND1': nd1, 'ND2': nd2, 'NP': np_val, 'NC': nc,
+                        'NV': nv, 'NA': na, 'SL': sl, 'PL': pl,
+                        'BH': bh, 'HL': hl, 'AB': truss_AB, 'AC': truss_AC,
+                        'AD': truss_AD, 'BC': truss_BC, 'BD': truss_BD,
+                        'CD': truss_CD, 'CE': truss_CE, 'CF': truss_CF,
+                        'DE': truss_DE, 'DF': truss_DF, 'EF': truss_EF,
+                        'EG': truss_EG, 'EH': truss_EH, 'FG': truss_FG,
+                        'FH': truss_FH, 'GH': truss_GH, 'GI': truss_GI,
+                        'GJ': truss_GJ, 'HI': truss_HI, 'HJ': truss_HJ,
+                        'IJ': truss_IJ
+                    }
+                    csv = export_prediction_results(predicted_species, f'{confidence:.1f}%', model_name, features_dict)
+                    st.download_button(
+                        label="📥 Download Result CSV",
+                        data=csv,
+                        file_name=f"prediction_{predicted_species}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv",
+                        mime="text/csv"
+                    )
+                    
             except Exception as e:
                 st.error(f"❌ Error: {e}")
+
+# ============================================
+# BATCH PREDICTION
+# ============================================
+elif choice == "📊 Batch Prediction":
+    st.markdown("## 📊 Batch Prediction")
+    st.markdown("""
+    <div class="info-box">
+        <strong>ℹ️</strong> Upload a CSV file with multiple samples for batch prediction.
+        Download the template below to get started.
+    </div>
+    """, unsafe_allow_html=True)
+    
+    if st.button("📥 Download CSV Template"):
+        csv = create_template_csv()
+        st.download_button(
+            label="Download Template",
+            data=csv,
+            file_name="ariidae_template.csv",
+            mime="text/csv"
+        )
+    
+    uploaded_file = st.file_uploader("Upload CSV File", type=['csv'])
+    
+    if uploaded_file is not None:
+        with st.spinner("Processing batch prediction..."):
+            result_df, error = batch_prediction_ariidae(uploaded_file)
+            
+            if error:
+                st.error(f"❌ {error}")
+            else:
+                st.success("✅ Batch prediction completed!")
+                st.dataframe(result_df)
+                
+                # Summary statistics
+                st.markdown("### 📊 Prediction Summary")
+                summary = result_df['Predicted_Species'].value_counts()
+                st.bar_chart(summary)
+                
+                # Download results
+                csv = result_df.to_csv(index=False)
+                st.download_button(
+                    label="📥 Download Results",
+                    data=csv,
+                    file_name=f"batch_predictions_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv",
+                    mime="text/csv"
+                )
 
 # ============================================
 # COMPARE MODELS
@@ -1244,7 +1803,7 @@ elif choice == "⚖️ Compare Models":
     
     fig, ax = plt.subplots(figsize=(10, 6))
     models = ['Hybrid CART-SVM', 'ANN (15 feat)', 'ANN-PSO (15 feat)', 'ANN-GA (15 feat)', 'ANN-GWO (31 feat)']
-    accuracies = [92.3, 76.5, 74.5, 71.0, 85.0]  # 85.0 adalah anggaran untuk 31 features
+    accuracies = [92.3, 76.5, 74.5, 71.0, 85.0]
     colors = ['#2ecc71', '#95a5a6', '#e74c3c', '#f39c12', '#3498db']
     
     bars = ax.bar(models, accuracies, color=colors, edgecolor='black', linewidth=1.5)
@@ -1295,6 +1854,47 @@ elif choice == "⚖️ Compare Models":
             </ul>
         </div>
         """, unsafe_allow_html=True)
+
+# ============================================
+# PREDICTION HISTORY
+# ============================================
+elif choice == "📜 Prediction History":
+    st.markdown("## 📜 Prediction History")
+    
+    if len(st.session_state.prediction_history) == 0:
+        st.info("No predictions made yet. Start classifying fish to see history here!")
+    else:
+        history_df = pd.DataFrame(st.session_state.prediction_history)
+        st.dataframe(history_df, use_container_width=True)
+        
+        # Summary statistics
+        st.markdown("### 📊 History Summary")
+        col1, col2, col3 = st.columns(3)
+        
+        with col1:
+            st.metric("Total Predictions", len(history_df))
+        with col2:
+            unique_species = history_df['species'].nunique()
+            st.metric("Unique Species", unique_species)
+        with col3:
+            family_counts = history_df['family'].value_counts()
+            most_common_family = family_counts.index[0] if len(family_counts) > 0 else "N/A"
+            st.metric("Most Common Family", most_common_family)
+        
+        # Species distribution
+        st.markdown("### 📊 Species Distribution")
+        species_counts = history_df['species'].value_counts().head(10)
+        st.bar_chart(species_counts)
+        
+        # Model distribution
+        st.markdown("### 🧠 Model Usage Distribution")
+        model_counts = history_df['model'].value_counts()
+        st.bar_chart(model_counts)
+        
+        # Clear history button
+        if st.button("🗑️ Clear History", use_container_width=True):
+            st.session_state.prediction_history = []
+            st.rerun()
 
 # ============================================
 # FOOTER
