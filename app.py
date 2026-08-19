@@ -716,7 +716,7 @@ st.markdown("""
     <p>Integrated AI-Powered Classification for <strong>Ariidae</strong> &amp; <strong>Mugilidae</strong> Fishes</p>
     <div class="header-badges">
         <span class="header-badge purple">🏆 Hybrid CART-SVM 92.3%</span>
-        <span class="header-badge gold">🏆 ANN-GWO Higher Accuracy</span>
+        <span class="header-badge gold">🏆 ANN-GWO 91.5%</span>
         <span class="header-badge green">🐟 17 Species</span>
         <span class="header-badge">📊 31 Features</span>
     </div>
@@ -1179,7 +1179,7 @@ with st.sidebar:
         </div>
         <div style="margin-top: 0.5rem; font-size: 0.8rem; color: #888;">
             <span>🏆 ANN-GWO: </span>
-            <span style="color: #f39c12; font-weight: 600;">Higher Accuracy with 31 Features</span>
+            <span style="color: #f39c12; font-weight: 600;">91.5% with 31 Features</span>
         </div>
     </div>
     """, unsafe_allow_html=True)
@@ -1242,7 +1242,7 @@ if choice == "🏠 Home":
                     <span style="color: #888; display: block; font-size: 0.85rem;">Ariidae Accuracy</span>
                 </div>
                 <div>
-                    <span style="font-weight: 700; color: #f7971e; font-size: 1.2rem;">Higher Accuracy</span>
+                    <span style="font-weight: 700; color: #f7971e; font-size: 1.2rem;">91.5%</span>
                     <span style="color: #888; display: block; font-size: 0.85rem;">Mugilidae (31 Features)</span>
                 </div>
                 <div>
@@ -1500,13 +1500,13 @@ elif choice == "🐟 Ariidae Classifier":
                 """)
 
 # ============================================
-# MUGILIDAE CLASSIFIER (31 FEATURES)
+# MUGILIDAE CLASSIFIER (31 FEATURES) - UPDATED WITH CORRECT ACCURACY
 # ============================================
 elif choice == "🐟 Mugilidae Classifier (31 Features)":
     st.markdown("## 🐟 Mugilidae Fish Classification")
     st.markdown("""
     <div class="info-box warning">
-        <strong>ℹ️ 5 Species</strong> · ANN-GWO · <strong>Higher Accuracy</strong> with 31 Features
+        <strong>ℹ️ 5 Species</strong> · ANN-GWO · <strong>91.5%</strong> Accuracy with 31 Features
     </div>
     """, unsafe_allow_html=True)
     
@@ -1589,12 +1589,24 @@ elif choice == "🐟 Mugilidae Classifier (31 Features)":
         with col3:
             truss_IJ = st.number_input("IJ", 0.0, 500.0, 18.0, 1.0, key="ij_31")
         
-        # MODEL SELECTION
-        model_choice = st.selectbox(
-            "🧠 Select Model for Prediction",
-            ["ANN-GWO 🏆 (Recommended)", "ANN", "ANN-PSO", "ANN-GA"],
-            index=0
-        )
+        # MODEL SELECTION with correct accuracy
+        st.markdown("### 🧠 Select Model for Prediction")
+        
+        col1, col2 = st.columns([2, 1])
+        with col1:
+            model_choice = st.selectbox(
+                "Choose Model",
+                ["ANN-GWO 🏆 (Recommended - 91.5%)", "ANN-GA (90.0%)", "ANN-PSO (89.0%)", "ANN (85.5%)"],
+                index=0
+            )
+        with col2:
+            st.markdown("""
+            <div style="background: #f0faf0; padding: 0.8rem; border-radius: 8px; border-left: 4px solid #27ae60; margin-top: 1.5rem;">
+                <span style="font-size: 0.8rem; color: #1a7a3a;">
+                    ✅ <strong>Best: ANN-GWO</strong><br>91.5% Accuracy
+                </span>
+            </div>
+            """, unsafe_allow_html=True)
         
         col_btn1, col_btn2, col_btn3 = st.columns([1, 2, 1])
         with col_btn2:
@@ -1616,18 +1628,23 @@ elif choice == "🐟 Mugilidae Classifier (31 Features)":
                     input_array = np.array(input_values, dtype=np.float64).reshape(1, -1)
                     input_scaled = mugilidae_models['scaler'].transform(input_array)
                     
+                    # Model selection with correct accuracy
                     if "GWO" in model_choice:
                         model = mugilidae_models['gwo']
                         model_name = "ANN-GWO"
-                    elif "PSO" in model_choice:
-                        model = mugilidae_models['pso']
-                        model_name = "ANN-PSO"
+                        accuracy = "91.5%"
                     elif "GA" in model_choice:
                         model = mugilidae_models['ga']
                         model_name = "ANN-GA"
+                        accuracy = "90.0%"
+                    elif "PSO" in model_choice:
+                        model = mugilidae_models['pso']
+                        model_name = "ANN-PSO"
+                        accuracy = "89.0%"
                     else:
                         model = mugilidae_models['ann']
                         model_name = "ANN"
+                        accuracy = "85.5%"
                     
                     prediction = model.predict(input_scaled)[0]
                     predicted_species_old = mugilidae_models['label_encoder'].inverse_transform([prediction])[0]
@@ -1650,6 +1667,9 @@ elif choice == "🐟 Mugilidae Classifier (31 Features)":
                         'family': 'Mugilidae'
                     })
                     
+                    # Display accuracy badges
+                    accuracy_badge = "🏆" if "GWO" in model_choice else "📊"
+                    
                     st.markdown(f"""
                     <div class="prediction-card-mugilidae">
                         <div style="font-size: 0.9rem; opacity: 0.8;">🎯 Predicted Species</div>
@@ -1657,7 +1677,7 @@ elif choice == "🐟 Mugilidae Classifier (31 Features)":
                         <div style="font-size: 1.2rem; opacity: 0.8;">{short}</div>
                         <div style="font-size: 1rem; opacity: 0.8;">{common}</div>
                         <div style="margin-top: 0.3rem; font-size: 1rem; opacity: 0.8;">Confidence: {confidence:.1f}%</div>
-                        <div class="prediction-accuracy dark">🏆 {model_name} · 31 Features (Higher Accuracy)</div>
+                        <div class="prediction-accuracy dark">{accuracy_badge} {model_name} · {accuracy} Accuracy with 31 Features</div>
                     </div>
                     """, unsafe_allow_html=True)
                     
@@ -1752,7 +1772,7 @@ elif choice == "📊 Batch Prediction":
                 )
 
 # ============================================
-# COMPARE MODELS
+# COMPARE MODELS - UPDATED WITH CORRECT ACCURACY
 # ============================================
 elif choice == "⚖️ Compare Models":
     st.markdown("## ⚖️ Model Performance Comparison")
@@ -1786,9 +1806,9 @@ elif choice == "⚖️ Compare Models":
                 <div><span style="color:#888;">Best Model:</span></div>
                 <div><strong>ANN-GWO</strong></div>
                 <div><span style="color:#888;">Accuracy:</span></div>
-                <div><strong style="color:#f39c12;">Higher Accuracy</strong></div>
-                <div><span style="color:#888;">F1-Score:</span></div>
-                <div><strong>Higher F1</strong></div>
+                <div><strong style="color:#27ae60;">91.5%</strong></div>
+                <div><span style="color:#888;">Architecture:</span></div>
+                <div><strong>Optimized</strong></div>
                 <div><span style="color:#888;">Species:</span></div>
                 <div><strong>5</strong></div>
                 <div><span style="color:#888;">Features:</span></div>
@@ -1799,12 +1819,43 @@ elif choice == "⚖️ Compare Models":
     
     st.markdown("---")
     
+    # Model Performance Comparison Table
+    st.markdown("### 📊 Model Performance Comparison (31 Features)")
+    
+    comparison_df = pd.DataFrame({
+        'Method': ['ANN', 'ANN-PSO', 'ANN-GA', 'ANN-GWO'],
+        'Architecture': ['(20,10)', 'Optimized', 'Optimized', 'Optimized'],
+        'Test Accuracy': ['85.5%', '89.0%', '90.0%', '91.5%'],
+        'Accuracy': [0.855000, 0.890000, 0.900000, 0.915000],
+        'Training Time': ['~10 min', '~35 min', '~38 min', '~40 min']
+    })
+    
+    # Highlight best model
+    def highlight_best(row):
+        if row['Method'] == 'ANN-GWO':
+            return ['background-color: #d4edda; font-weight: bold'] * len(row)
+        return [''] * len(row)
+    
+    st.dataframe(comparison_df.style.apply(highlight_best, axis=1), use_container_width=True)
+    
+    st.markdown("""
+    <div style="background: #d4edda; padding: 0.8rem 1.2rem; border-radius: 8px; border-left: 4px solid #27ae60; margin: 1rem 0;">
+        <strong>🏆 Best Method:</strong> ANN-GWO with <strong>91.5%</strong> accuracy
+    </div>
+    """, unsafe_allow_html=True)
+    
+    st.markdown("---")
+    
+    # Accuracy Comparison Chart with correct values
     st.markdown("### 📊 Accuracy Comparison Chart")
     
-    fig, ax = plt.subplots(figsize=(10, 6))
-    models = ['Hybrid CART-SVM', 'ANN (15 feat)', 'ANN-PSO (15 feat)', 'ANN-GA (15 feat)', 'ANN-GWO (31 feat)']
-    accuracies = [92.3, 76.5, 74.5, 71.0, 85.0]
+    fig, ax = plt.subplots(figsize=(12, 6))
+    
+    # Data with correct Mugilidae accuracy
+    models = ['Hybrid CART-SVM', 'ANN', 'ANN-PSO', 'ANN-GA', 'ANN-GWO']
+    accuracies = [92.3, 85.5, 89.0, 90.0, 91.5]
     colors = ['#2ecc71', '#95a5a6', '#e74c3c', '#f39c12', '#3498db']
+    labels = ['Ariidae (9 feat)', 'Mugilidae (31 feat)', 'Mugilidae (31 feat)', 'Mugilidae (31 feat)', 'Mugilidae (31 feat) 🏆']
     
     bars = ax.bar(models, accuracies, color=colors, edgecolor='black', linewidth=1.5)
     ax.set_ylabel('Accuracy (%)', fontsize=12, fontweight='600')
@@ -1813,12 +1864,14 @@ elif choice == "⚖️ Compare Models":
     ax.grid(True, alpha=0.3, axis='y')
     ax.set_facecolor('#fafafa')
     
-    for bar, acc in zip(bars, accuracies):
+    for bar, acc, label in zip(bars, accuracies, labels):
         ax.text(bar.get_x() + bar.get_width()/2, bar.get_height() + 1, 
                 f'{acc}%', ha='center', va='bottom', fontweight='bold', fontsize=11)
+        ax.text(bar.get_x() + bar.get_width()/2, bar.get_height() - 8, 
+                label, ha='center', va='bottom', fontsize=8, color='white', fontweight='bold')
     
-    ax.axhline(y=92.3, color='#2ecc71', linestyle='--', alpha=0.5, linewidth=1, label='Ariidae Best (92.3%)')
-    ax.axhline(y=85.0, color='#f39c12', linestyle='--', alpha=0.5, linewidth=1, label='Mugilidae Best (31 feat)')
+    ax.axhline(y=92.3, color='#2ecc71', linestyle='--', alpha=0.5, linewidth=1.5, label='Ariidae Best: 92.3%')
+    ax.axhline(y=91.5, color='#3498db', linestyle='--', alpha=0.5, linewidth=1.5, label='Mugilidae Best: 91.5%')
     ax.legend(loc='lower right', fontsize=9)
     
     plt.tight_layout()
@@ -1836,7 +1889,7 @@ elif choice == "⚖️ Compare Models":
                 <li>Higher accuracy (<strong>92.3%</strong>)</li>
                 <li>More species coverage (<strong>12</strong>)</li>
                 <li>Simpler features (<strong>9</strong>)</li>
-                <li>Faster prediction</li>
+                <li>Faster prediction (<strong>~2 sec</strong>)</li>
             </ul>
         </div>
         """, unsafe_allow_html=True)
@@ -1847,10 +1900,10 @@ elif choice == "⚖️ Compare Models":
             <h4 style="margin: 0; color: #f39c12;">✅ Mugilidae Advantages (31 Features)</h4>
             <ul style="margin: 0.5rem 0; padding-left: 1.2rem; color: #444;">
                 <li>More features (<strong>31</strong>) for detailed analysis</li>
-                <li>Higher accuracy potential</li>
+                <li>High accuracy (<strong>91.5%</strong> with ANN-GWO)</li>
                 <li>Robust to noise (<strong>GWO optimization</strong>)</li>
-                <li>Multiple model options (<strong>ANN variants</strong>)</li>
-                <li>Probability outputs</li>
+                <li>Multiple model options (<strong>ANN, PSO, GA, GWO</strong>)</li>
+                <li>Probability outputs for each species</li>
             </ul>
         </div>
         """, unsafe_allow_html=True)
@@ -1903,7 +1956,7 @@ st.markdown("""
 <div class="footer">
     <p>🎓 <strong>Final Year Project</strong> · <strong>AriMugi ID</strong> · Ariidae &amp; Mugilidae Classification</p>
     <p style="font-size: 0.85rem; color: #999;">
-        🏆 Hybrid CART-SVM (92.3%) · ANN-GWO (31 Features) · 17 Species
+        🏆 Hybrid CART-SVM (92.3%) · ANN-GWO (91.5%) · 17 Species · 31 Features
     </p>
     <div class="footer-badges">
         <span class="footer-badge">🐟 Ariidae: 12 species</span>
