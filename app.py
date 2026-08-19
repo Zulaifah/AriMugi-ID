@@ -1138,7 +1138,7 @@ with st.sidebar:
         [
             "🏠 Home",
             "🐟 Ariidae Classifier",
-            "🐟 Mugilidae Classifier (31 Features)",
+            "🐟 Mugilidae Classifier",
             "📊 Batch Prediction",
             "⚖️ Compare Models",
             "📜 Prediction History"
@@ -1179,7 +1179,7 @@ with st.sidebar:
         </div>
         <div style="margin-top: 0.5rem; font-size: 0.8rem; color: #888;">
             <span>🏆 ANN-GWO: </span>
-            <span style="color: #f39c12; font-weight: 600;">91.5% with 31 Features</span>
+            <span style="color: #f39c12; font-weight: 600;">91.5%</span>
         </div>
     </div>
     """, unsafe_allow_html=True)
@@ -1243,7 +1243,7 @@ if choice == "🏠 Home":
                 </div>
                 <div>
                     <span style="font-weight: 700; color: #f7971e; font-size: 1.2rem;">91.5%</span>
-                    <span style="color: #888; display: block; font-size: 0.85rem;">Mugilidae (31 Features)</span>
+                    <span style="color: #888; display: block; font-size: 0.85rem;">Mugilidae Accuracy</span>
                 </div>
                 <div>
                     <span style="font-weight: 700; color: #2ecc71; font-size: 1.2rem;">17</span>
@@ -1270,7 +1270,7 @@ if choice == "🏠 Home":
             </div>
             <div style="display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 0;">
                 <span style="display:inline-block; width:10px; height:10px; border-radius:50%; background:{status_color2};"></span>
-                <span>Mugilidae Model (31 Features)</span>
+                <span>Mugilidae Model</span>
                 <span style="margin-left:auto; font-size:0.8rem; color:{status_color2};">{'✅ Loaded' if mugilidae_31_loaded else '❌ Not Loaded'}</span>
             </div>
             <div style="margin-top: 0.8rem; padding: 0.5rem; background: #f8f9fa; border-radius: 8px; font-size: 0.85rem; color: #666;">
@@ -1500,18 +1500,18 @@ elif choice == "🐟 Ariidae Classifier":
                 """)
 
 # ============================================
-# MUGILIDAE CLASSIFIER (31 FEATURES) - UPDATED WITH CORRECT ACCURACY
+# MUGILIDAE CLASSIFIER - UPDATED (REMOVED "(31 features)")
 # ============================================
-elif choice == "🐟 Mugilidae Classifier (31 Features)":
+elif choice == "🐟 Mugilidae Classifier":
     st.markdown("## 🐟 Mugilidae Fish Classification")
     st.markdown("""
     <div class="info-box warning">
-        <strong>ℹ️ 5 Species</strong> · ANN-GWO · <strong>91.5%</strong> Accuracy with 31 Features
+        <strong>ℹ️ 5 Species</strong> · ANN-GWO · <strong>91.5%</strong> Accuracy
     </div>
     """, unsafe_allow_html=True)
     
     if not mugilidae_31_loaded:
-        st.error("❌ 31 features models not loaded. Please ensure all .pkl files are uploaded.")
+        st.error("❌ Models not loaded. Please ensure all .pkl files are uploaded.")
         st.info("""
         Required files:
         - ann_model_31features.pkl
@@ -1610,7 +1610,7 @@ elif choice == "🐟 Mugilidae Classifier (31 Features)":
         
         col_btn1, col_btn2, col_btn3 = st.columns([1, 2, 1])
         with col_btn2:
-            predict_clicked = st.button("🔍 Identify Species", key="btn_mugilidae_31", use_container_width=True)
+            predict_clicked = st.button("🔍 Identify Species", key="btn_mugilidae", use_container_width=True)
         
         if predict_clicked:
             try:
@@ -1677,7 +1677,7 @@ elif choice == "🐟 Mugilidae Classifier (31 Features)":
                         <div style="font-size: 1.2rem; opacity: 0.8;">{short}</div>
                         <div style="font-size: 1rem; opacity: 0.8;">{common}</div>
                         <div style="margin-top: 0.3rem; font-size: 1rem; opacity: 0.8;">Confidence: {confidence:.1f}%</div>
-                        <div class="prediction-accuracy dark">{accuracy_badge} {model_name} · {accuracy} Accuracy with 31 Features</div>
+                        <div class="prediction-accuracy dark">{accuracy_badge} {model_name} · {accuracy} Accuracy</div>
                     </div>
                     """, unsafe_allow_html=True)
                     
@@ -1772,7 +1772,7 @@ elif choice == "📊 Batch Prediction":
                 )
 
 # ============================================
-# COMPARE MODELS - UPDATED WITH CORRECT ACCURACY
+# COMPARE MODELS - REMOVED "Model Performance Comparison" box
 # ============================================
 elif choice == "⚖️ Compare Models":
     st.markdown("## ⚖️ Model Performance Comparison")
@@ -1819,33 +1819,6 @@ elif choice == "⚖️ Compare Models":
     
     st.markdown("---")
     
-    # Model Performance Comparison Table
-    st.markdown("### 📊 Model Performance Comparison (31 Features)")
-    
-    comparison_df = pd.DataFrame({
-        'Method': ['ANN', 'ANN-PSO', 'ANN-GA', 'ANN-GWO'],
-        'Architecture': ['(20,10)', 'Optimized', 'Optimized', 'Optimized'],
-        'Test Accuracy': ['85.5%', '89.0%', '90.0%', '91.5%'],
-        'Accuracy': [0.855000, 0.890000, 0.900000, 0.915000],
-        'Training Time': ['~10 min', '~35 min', '~38 min', '~40 min']
-    })
-    
-    # Highlight best model
-    def highlight_best(row):
-        if row['Method'] == 'ANN-GWO':
-            return ['background-color: #d4edda; font-weight: bold'] * len(row)
-        return [''] * len(row)
-    
-    st.dataframe(comparison_df.style.apply(highlight_best, axis=1), use_container_width=True)
-    
-    st.markdown("""
-    <div style="background: #d4edda; padding: 0.8rem 1.2rem; border-radius: 8px; border-left: 4px solid #27ae60; margin: 1rem 0;">
-        <strong>🏆 Best Method:</strong> ANN-GWO with <strong>91.5%</strong> accuracy
-    </div>
-    """, unsafe_allow_html=True)
-    
-    st.markdown("---")
-    
     # Accuracy Comparison Chart with correct values
     st.markdown("### 📊 Accuracy Comparison Chart")
     
@@ -1855,7 +1828,7 @@ elif choice == "⚖️ Compare Models":
     models = ['Hybrid CART-SVM', 'ANN', 'ANN-PSO', 'ANN-GA', 'ANN-GWO']
     accuracies = [92.3, 85.5, 89.0, 90.0, 91.5]
     colors = ['#2ecc71', '#95a5a6', '#e74c3c', '#f39c12', '#3498db']
-    labels = ['Ariidae (9 feat)', 'Mugilidae (31 feat)', 'Mugilidae (31 feat)', 'Mugilidae (31 feat)', 'Mugilidae (31 feat) 🏆']
+    labels = ['Ariidae', 'Mugilidae', 'Mugilidae', 'Mugilidae', 'Mugilidae 🏆']
     
     bars = ax.bar(models, accuracies, color=colors, edgecolor='black', linewidth=1.5)
     ax.set_ylabel('Accuracy (%)', fontsize=12, fontweight='600')
@@ -1897,7 +1870,7 @@ elif choice == "⚖️ Compare Models":
     with col2:
         st.markdown("""
         <div style="background: #fef9e7; padding: 1rem; border-radius: 12px; border-left: 4px solid #f39c12;">
-            <h4 style="margin: 0; color: #f39c12;">✅ Mugilidae Advantages (31 Features)</h4>
+            <h4 style="margin: 0; color: #f39c12;">✅ Mugilidae Advantages</h4>
             <ul style="margin: 0.5rem 0; padding-left: 1.2rem; color: #444;">
                 <li>More features (<strong>31</strong>) for detailed analysis</li>
                 <li>High accuracy (<strong>91.5%</strong> with ANN-GWO)</li>
