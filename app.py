@@ -1134,7 +1134,7 @@ def predict_ariidae(features):
         return "Arius maculatus"
 
 # ============================================
-# SIDEBAR - UPDATED WITH ALL MODELS
+# SIDEBAR - UPDATED WITH ALL MODELS (FIXED)
 # ============================================
 with st.sidebar:
     st.markdown("### 🧭 Navigation")
@@ -1163,7 +1163,7 @@ with st.sidebar:
     
     st.markdown("---")
     
-    # Model Performance - UPDATED WITH ALL MODELS
+    # Model Performance - FIXED WITH ALL MODELS AND CORRECT DISPLAY
     st.markdown("""
     <div class="sidebar-section">
         <h4>📊 Model Performance</h4>
@@ -1188,15 +1188,15 @@ with st.sidebar:
         <div style="margin-bottom: 0.3rem; font-size: 0.75rem; color: #888; font-weight: 600;">🐟 Mugilidae Models</div>
         <div class="perf-item">
             <span>🧠 ANN</span>
-            <span class="perf-mugilidae">85.5%</span>
+            <span class="perf-acc" style="color: #f7971e;">85.5%</span>
         </div>
         <div class="perf-item">
             <span>🧠 ANN-PSO</span>
-            <span class="perf-mugilidae">89.0%</span>
+            <span class="perf-acc" style="color: #f7971e;">89.0%</span>
         </div>
         <div class="perf-item">
             <span>🧠 ANN-GA</span>
-            <span class="perf-mugilidae">90.0%</span>
+            <span class="perf-acc" style="color: #f7971e;">90.0%</span>
         </div>
         <div class="perf-item" style="border-bottom: 2px solid #f7971e; padding-bottom: 0.5rem;">
             <span>🏆 ANN-GWO</span>
@@ -1239,7 +1239,7 @@ with st.sidebar:
         )
     
     st.caption("🎓 Final Year Project | Universiti Malaysia Terengganu")
-
+    
 # ============================================
 # HOME PAGE
 # ============================================
