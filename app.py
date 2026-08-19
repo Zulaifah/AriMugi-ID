@@ -297,7 +297,8 @@ def apply_css(dark_mode=False):
                 color: #f39c12;
             }
             .perf-mugilidae {
-                color: #f7971e;
+                font-weight: 600;
+                color: #f7971e !important;
             }
             
             .species-list-sidebar {
@@ -636,7 +637,8 @@ def apply_css(dark_mode=False):
                 color: #f39c12;
             }
             .perf-mugilidae {
-                color: #f7971e;
+                font-weight: 600;
+                color: #f7971e !important;
             }
             
             .species-list-sidebar {
@@ -748,7 +750,7 @@ ARIIDAE_SPECIES = {
 }
 
 # ============================================
-# MUGILIDAE NAME MAPPING (Lama → Baru)
+# MUGILIDAE NAME MAPPING (Old → New)
 # ============================================
 MUGILIDAE_NAME_MAPPING = {
     "Planiliza": "Planiliza subviridis",
@@ -759,7 +761,7 @@ MUGILIDAE_NAME_MAPPING = {
 }
 
 # ============================================
-# DATA SPESIES LENGKAP (GLOBAL)
+# COMPLETE SPECIES DATA
 # ============================================
 SPECIES_DETAILS = {
     # ===== ARIIDAE (12 species) =====
@@ -883,7 +885,7 @@ SPECIES_DETAILS = {
         "conservation": "Least Concern",
         "features": "Rugose head, long barbels"
     },
-    # ===== MUGILIDAE (5 species - NAMA PENUH) =====
+    # ===== MUGILIDAE (5 species - FULL NAMES) =====
     "Planiliza subviridis": {
         "common": "Greenback Mullet",
         "short": "P.SUBVIRIDIS",
@@ -937,11 +939,11 @@ SPECIES_DETAILS = {
 }
 
 # ============================================
-# FUNGSI UNTUK DAPATKAN GAMBAR
+# FUNCTION TO GET SPECIES IMAGE
 # ============================================
 @st.cache_data
 def get_species_image(species_name, family="ariidae"):
-    """Cari gambar species dalam folder images-ariidae atau images-mugilidae"""
+    """Find species image in images-ariidae or images-mugilidae folders"""
     clean_name = species_name.lower().replace(' ', '_')
     
     if family == "ariidae":
@@ -962,7 +964,7 @@ def get_species_image(species_name, family="ariidae"):
     return None
 
 # ============================================
-# FUNGSI VALIDASI INPUT
+# INPUT VALIDATION FUNCTION
 # ============================================
 def validate_ariidae_inputs(head, body, eye, snout, maxillary, mandibullary, mental, dorsal, anal):
     """Validate input values for Ariidae"""
@@ -991,7 +993,7 @@ def validate_ariidae_inputs(head, body, eye, snout, maxillary, mandibullary, men
     return True, []
 
 # ============================================
-# FUNGSI EXPORT HASIL
+# EXPORT RESULTS FUNCTION
 # ============================================
 def export_prediction_results(prediction, confidence, model_type, features_dict):
     """Export prediction results to CSV"""
@@ -1006,7 +1008,7 @@ def export_prediction_results(prediction, confidence, model_type, features_dict)
     return df.to_csv(index=False)
 
 # ============================================
-# FUNGSI BATCH PREDICTION
+# BATCH PREDICTION FUNCTION
 # ============================================
 def batch_prediction_ariidae(uploaded_file):
     """Predict multiple samples from CSV file"""
@@ -1134,7 +1136,7 @@ def predict_ariidae(features):
         return "Arius maculatus"
 
 # ============================================
-# SIDEBAR - ALTERNATIVE SIMPLER APPROACH
+# SIDEBAR
 # ============================================
 with st.sidebar:
     st.markdown("### 🧭 Navigation")
@@ -1163,7 +1165,7 @@ with st.sidebar:
     
     st.markdown("---")
     
-    # Model Performance - SIMPLER APPROACH
+    # Model Performance
     st.markdown("### 📊 Model Performance")
     
     st.markdown("**🐟 Ariidae Models**")
@@ -1180,8 +1182,9 @@ with st.sidebar:
     st.markdown("- 🧠 ANN-GA: 90.0%")
     st.markdown("- 🏆 **ANN-GWO: 91.5%**")
     
-    # Species List
     st.markdown("---")
+    
+    # Species List
     st.markdown("### 🐟 17 Species")
     
     for name in list(ARIIDAE_SPECIES.keys())[:8]:
@@ -1202,7 +1205,7 @@ with st.sidebar:
         )
     
     st.caption("🎓 Final Year Project | Universiti Malaysia Terengganu")
-    
+
 # ============================================
 # HOME PAGE
 # ============================================
@@ -1430,7 +1433,7 @@ elif choice == "🐟 Ariidae Classifier":
             common = species_info.get("common", "")
             short = species_info.get("short", "")
             
-            # Simpan ke histori
+            # Save to history
             st.session_state.prediction_history.append({
                 'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
                 'species': prediction,
@@ -1484,7 +1487,7 @@ elif choice == "🐟 Ariidae Classifier":
                 """)
 
 # ============================================
-# MUGILIDAE CLASSIFIER
+# MUGILIDAE CLASSIFIER - WITH TRUSS EXPLANATION
 # ============================================
 elif choice == "🐟 Mugilidae Classifier":
     st.markdown("## 🐟 Mugilidae Fish Classification")
@@ -1533,9 +1536,32 @@ elif choice == "🐟 Mugilidae Classifier":
             bh = st.number_input("BH (Body Height)", 0.0, 300.0, 45.0, 5.0, key="bh_31")
             hl = st.number_input("HL (Head Length)", 0.0, 300.0, 40.0, 5.0, key="hl_31")
         
-        # ROW 3-5: TRUSS NETWORK FEATURES (21)
+        # ROW 3-5: TRUSS NETWORK FEATURES (21) - WITH EXPLANATION
         st.markdown("**📐 Truss Network Features (mm)**")
-        st.caption("AB, AC, AD, BC, BD, CD, CE, CF, DE, DF, EF, EG, EH, FG, FH, GH, GI, GJ, HI, HJ, IJ")
+        st.caption("📌 AB, AC, AD, BC, BD, CD, CE, CF, DE, DF, EF, EG, EH, FG, FH, GH, GI, GJ, HI, HJ, IJ")
+        
+        # TRUSS NETWORK EXPLANATION
+        with st.expander("📖 What do these letters mean? Click to find out!"):
+            st.markdown("""
+            **Truss Network** measures the distance between key landmarks on the fish body.
+            
+            | Letter | Location on Fish |
+            |--------|------------------|
+            | **A** | Anterior tip of snout (front of mouth) |
+            | **B** | Pectoral fin origin (where the pectoral fin starts) |
+            | **C** | Pelvic fin origin (where the pelvic fin starts) |
+            | **D** | Anal fin origin (where the anal fin starts) |
+            | **E** | Dorsal fin origin (where the dorsal fin starts) |
+            | **F** | Upper caudal fin origin (top of tail fin) |
+            | **G** | Lower caudal fin origin (bottom of tail fin) |
+            | **H** | Second dorsal fin origin (where the second dorsal fin starts) |
+            | **I** | Second anal fin origin (where the second anal fin starts) |
+            | **J** | Caudal fin tip (end of the tail) |
+            
+            📏 **Example:** **AB** = distance from the snout tip (A) to the pectoral fin origin (B)
+            
+            💡 **Why is this important?** Truss network helps identify fish species based on their body shape.
+            """)
         
         col1, col2, col3 = st.columns(3)
         with col1:
@@ -1641,7 +1667,7 @@ elif choice == "🐟 Mugilidae Classifier":
                     short = species_details.get("short", predicted_species_old)
                     common = species_details.get("common", "")
                     
-                    # Simpan ke histori
+                    # Save to history
                     st.session_state.prediction_history.append({
                         'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
                         'species': predicted_species,
@@ -1756,7 +1782,7 @@ elif choice == "📊 Batch Prediction":
                 )
 
 # ============================================
-# COMPARE MODELS - UPDATED WITH ALL MODELS
+# COMPARE MODELS
 # ============================================
 elif choice == "⚖️ Compare Models":
     st.markdown("## ⚖️ Model Performance Comparison")
