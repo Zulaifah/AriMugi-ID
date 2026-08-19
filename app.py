@@ -351,7 +351,7 @@ st.markdown("""
     <p>Integrated AI-Powered Classification for <strong>Ariidae</strong> &amp; <strong>Mugilidae</strong> Fishes</p>
     <div class="header-badges">
         <span class="header-badge purple">🏆 Hybrid CART-SVM 92.3%</span>
-        <span class="header-badge gold">🏆 ANN-GWO 77.5%</span>
+        <span class="header-badge gold">🏆 ANN-GWO Higher Accuracy</span>
         <span class="header-badge green">🐟 17 Species</span>
         <span class="header-badge">📊 31 Features</span>
     </div>
@@ -999,7 +999,7 @@ elif choice == "🐟 Ariidae Classifier":
             """)
 
 # ============================================
-# MUGILIDAE CLASSIFIER (31 FEATURES)
+# MUGILIDAE CLASSIFIER (31 FEATURES - DENGAN NAMA TRUSS AB, AC, AD, ...)
 # ============================================
 elif choice == "🐟 Mugilidae Classifier (31 Features)":
     st.markdown("## 🐟 Mugilidae Fish Classification")
@@ -1053,48 +1053,49 @@ elif choice == "🐟 Mugilidae Classifier (31 Features)":
             hl = st.number_input("HL (Head Length)", 0.0, 300.0, 40.0, 5.0, key="hl_31")
         
         # ============================================
-        # ROW 3-5: TRUSS NETWORK FEATURES (21)
+        # ROW 3-5: TRUSS NETWORK FEATURES (21) - NAMA SEBENAR
         # ============================================
         st.markdown("**📐 Truss Network Features (mm)**")
+        st.caption("AB, AC, AD, BC, BD, CD, CE, CF, DE, DF, EF, EG, EH, FG, FH, GH, GI, GJ, HI, HJ, IJ")
         
-        # Row 3: Truss 1-7
+        # Row 1: AB, AC, AD, BC, BD, CD, CE
         col1, col2, col3 = st.columns(3)
         with col1:
-            t1 = st.number_input("Truss_1", 0.0, 500.0, 80.0, 10.0, key="t1_31")
-            t2 = st.number_input("Truss_2", 0.0, 500.0, 70.0, 10.0, key="t2_31")
-            t3 = st.number_input("Truss_3", 0.0, 500.0, 65.0, 10.0, key="t3_31")
+            truss_AB = st.number_input("AB", 0.0, 500.0, 8.0, 1.0, key="ab_31")
+            truss_AC = st.number_input("AC", 0.0, 500.0, 30.0, 1.0, key="ac_31")
+            truss_AD = st.number_input("AD", 0.0, 500.0, 25.0, 1.0, key="ad_31")
         with col2:
-            t4 = st.number_input("Truss_4", 0.0, 500.0, 60.0, 10.0, key="t4_31")
-            t5 = st.number_input("Truss_5", 0.0, 500.0, 55.0, 10.0, key="t5_31")
-            t6 = st.number_input("Truss_6", 0.0, 500.0, 50.0, 10.0, key="t6_31")
+            truss_BC = st.number_input("BC", 0.0, 500.0, 25.0, 1.0, key="bc_31")
+            truss_BD = st.number_input("BD", 0.0, 500.0, 20.0, 1.0, key="bd_31")
+            truss_CD = st.number_input("CD", 0.0, 500.0, 25.0, 1.0, key="cd_31")
         with col3:
-            t7 = st.number_input("Truss_7", 0.0, 500.0, 45.0, 10.0, key="t7_31")
+            truss_CE = st.number_input("CE", 0.0, 500.0, 45.0, 1.0, key="ce_31")
         
-        # Row 4: Truss 8-14
+        # Row 2: CF, DE, DF, EF, EG, EH, FG
         col1, col2, col3 = st.columns(3)
         with col1:
-            t8 = st.number_input("Truss_8", 0.0, 500.0, 40.0, 10.0, key="t8_31")
-            t9 = st.number_input("Truss_9", 0.0, 500.0, 35.0, 10.0, key="t9_31")
-            t10 = st.number_input("Truss_10", 0.0, 500.0, 30.0, 10.0, key="t10_31")
+            truss_CF = st.number_input("CF", 0.0, 500.0, 40.0, 1.0, key="cf_31")
+            truss_DE = st.number_input("DE", 0.0, 500.0, 55.0, 1.0, key="de_31")
+            truss_DF = st.number_input("DF", 0.0, 500.0, 30.0, 1.0, key="df_31")
         with col2:
-            t11 = st.number_input("Truss_11", 0.0, 500.0, 25.0, 10.0, key="t11_31")
-            t12 = st.number_input("Truss_12", 0.0, 500.0, 20.0, 10.0, key="t12_31")
-            t13 = st.number_input("Truss_13", 0.0, 500.0, 15.0, 10.0, key="t13_31")
+            truss_EF = st.number_input("EF", 0.0, 500.0, 45.0, 1.0, key="ef_31")
+            truss_EG = st.number_input("EG", 0.0, 500.0, 35.0, 1.0, key="eg_31")
+            truss_EH = st.number_input("EH", 0.0, 500.0, 50.0, 1.0, key="eh_31")
         with col3:
-            t14 = st.number_input("Truss_14", 0.0, 500.0, 10.0, 10.0, key="t14_31")
+            truss_FG = st.number_input("FG", 0.0, 500.0, 60.0, 1.0, key="fg_31")
         
-        # Row 5: Truss 15-21
+        # Row 3: FH, GH, GI, GJ, HI, HJ, IJ
         col1, col2, col3 = st.columns(3)
         with col1:
-            t15 = st.number_input("Truss_15", 0.0, 500.0, 8.0, 10.0, key="t15_31")
-            t16 = st.number_input("Truss_16", 0.0, 500.0, 6.0, 10.0, key="t16_31")
-            t17 = st.number_input("Truss_17", 0.0, 500.0, 5.0, 10.0, key="t17_31")
+            truss_FH = st.number_input("FH", 0.0, 500.0, 45.0, 1.0, key="fh_31")
+            truss_GH = st.number_input("GH", 0.0, 500.0, 35.0, 1.0, key="gh_31")
+            truss_GI = st.number_input("GI", 0.0, 500.0, 35.0, 1.0, key="gi_31")
         with col2:
-            t18 = st.number_input("Truss_18", 0.0, 500.0, 4.0, 10.0, key="t18_31")
-            t19 = st.number_input("Truss_19", 0.0, 500.0, 3.0, 10.0, key="t19_31")
-            t20 = st.number_input("Truss_20", 0.0, 500.0, 2.0, 10.0, key="t20_31")
+            truss_GJ = st.number_input("GJ", 0.0, 500.0, 40.0, 1.0, key="gj_31")
+            truss_HI = st.number_input("HI", 0.0, 500.0, 45.0, 1.0, key="hi_31")
+            truss_HJ = st.number_input("HJ", 0.0, 500.0, 35.0, 1.0, key="hj_31")
         with col3:
-            t21 = st.number_input("Truss_21", 0.0, 500.0, 1.0, 10.0, key="t21_31")
+            truss_IJ = st.number_input("IJ", 0.0, 500.0, 18.0, 1.0, key="ij_31")
         
         # ============================================
         # MODEL SELECTION
@@ -1116,11 +1117,12 @@ elif choice == "🐟 Mugilidae Classifier (31 Features)":
             try:
                 # Kumpulkan 31 input values
                 input_values = [
-                    nd1, nd2, np_val, nc, nv, na,  # Meristic (6)
-                    sl, pl, bh, hl,                # Morphometric (4)
-                    t1, t2, t3, t4, t5, t6, t7, t8, t9, t10,  # Truss (10)
-                    t11, t12, t13, t14, t15, t16, t17, t18, t19, t20, t21  # Truss (11)
-                ]
+                    nd1, nd2, np_val, nc, nv, na,                              # Meristic (6)
+                    sl, pl, bh, hl,                                            # Morphometric (4)
+                    truss_AB, truss_AC, truss_AD, truss_BC, truss_BD, truss_CD, truss_CE,  # Truss (7)
+                    truss_CF, truss_DE, truss_DF, truss_EF, truss_EG, truss_EH, truss_FG,  # Truss (7)
+                    truss_FH, truss_GH, truss_GI, truss_GJ, truss_HI, truss_HJ, truss_IJ   # Truss (7)
+                ]  # Total: 6 + 4 + 7 + 7 + 7 = 31
                 
                 # Pastikan jumlah input = 31
                 if len(input_values) != 31:
