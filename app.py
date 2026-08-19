@@ -1134,7 +1134,7 @@ def predict_ariidae(features):
         return "Arius maculatus"
 
 # ============================================
-# SIDEBAR - UPDATED WITH ALL MODELS (FIXED)
+# SIDEBAR - ALTERNATIVE SIMPLER APPROACH
 # ============================================
 with st.sidebar:
     st.markdown("### 🧭 Navigation")
@@ -1163,68 +1163,31 @@ with st.sidebar:
     
     st.markdown("---")
     
-    # Model Performance - FIXED WITH ALL MODELS AND CORRECT DISPLAY
-    st.markdown("""
-    <div class="sidebar-section">
-        <h4>📊 Model Performance</h4>
-        <div style="margin-bottom: 0.3rem; font-size: 0.75rem; color: #888; font-weight: 600;">🐟 Ariidae Models</div>
-        <div class="perf-item">
-            <span>🌿 CART</span>
-            <span class="perf-acc">69.2%</span>
-        </div>
-        <div class="perf-item">
-            <span>⚡ SVM</span>
-            <span class="perf-acc">92.3%</span>
-        </div>
-        <div class="perf-item">
-            <span>📊 KNN</span>
-            <span class="perf-acc">88.5%</span>
-        </div>
-        <div class="perf-item" style="border-bottom: 2px solid #f39c12; padding-bottom: 0.5rem; margin-bottom: 0.5rem;">
-            <span>🏆 HYBRID CART-SVM</span>
-            <span class="perf-acc perf-best">92.3%</span>
-        </div>
-        
-        <div style="margin-bottom: 0.3rem; font-size: 0.75rem; color: #888; font-weight: 600;">🐟 Mugilidae Models</div>
-        <div class="perf-item">
-            <span>🧠 ANN</span>
-            <span class="perf-acc" style="color: #f7971e;">85.5%</span>
-        </div>
-        <div class="perf-item">
-            <span>🧠 ANN-PSO</span>
-            <span class="perf-acc" style="color: #f7971e;">89.0%</span>
-        </div>
-        <div class="perf-item">
-            <span>🧠 ANN-GA</span>
-            <span class="perf-acc" style="color: #f7971e;">90.0%</span>
-        </div>
-        <div class="perf-item" style="border-bottom: 2px solid #f7971e; padding-bottom: 0.5rem;">
-            <span>🏆 ANN-GWO</span>
-            <span class="perf-acc perf-best">91.5%</span>
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
+    # Model Performance - SIMPLER APPROACH
+    st.markdown("### 📊 Model Performance")
+    
+    st.markdown("**🐟 Ariidae Models**")
+    st.markdown("- 🌿 CART: 69.2%")
+    st.markdown("- ⚡ SVM: 92.3%")
+    st.markdown("- 📊 KNN: 88.5%")
+    st.markdown("- 🏆 **HYBRID CART-SVM: 92.3%**")
+    
+    st.markdown("---")
+    
+    st.markdown("**🐟 Mugilidae Models**")
+    st.markdown("- 🧠 ANN: 85.5%")
+    st.markdown("- 🧠 ANN-PSO: 89.0%")
+    st.markdown("- 🧠 ANN-GA: 90.0%")
+    st.markdown("- 🏆 **ANN-GWO: 91.5%**")
     
     # Species List
-    st.markdown("""
-    <div class="sidebar-section">
-        <h4>🐟 17 Species</h4>
-        <div class="species-list-sidebar">
-    """, unsafe_allow_html=True)
+    st.markdown("---")
+    st.markdown("### 🐟 17 Species")
     
-    for name in list(ARIIDAE_SPECIES.keys())[:6]:
-        st.markdown(f"""
-        <div class="species-item-sidebar">
-            <span class="dot-real"></span>
-            <span>{name.split()[1] if len(name.split()) > 1 else name[:10]}</span>
-            <span class="species-tag-sidebar tag-real-sidebar">Real</span>
-        </div>
-        """, unsafe_allow_html=True)
+    for name in list(ARIIDAE_SPECIES.keys())[:8]:
+        st.markdown(f"- {name}")
     
-    st.markdown("""
-        <div style="font-size:0.7rem;color:#999;margin-top:0.3rem;">+6 more species</div>
-    </div>
-    """, unsafe_allow_html=True)
+    st.markdown("*+4 more species*")
     
     st.markdown("---")
     
