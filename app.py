@@ -296,6 +296,9 @@ def apply_css(dark_mode=False):
             .perf-best {
                 color: #f39c12;
             }
+            .perf-mugilidae {
+                color: #f7971e;
+            }
             
             .species-list-sidebar {
                 max-height: 300px;
@@ -631,6 +634,9 @@ def apply_css(dark_mode=False):
             }
             .perf-best {
                 color: #f39c12;
+            }
+            .perf-mugilidae {
+                color: #f7971e;
             }
             
             .species-list-sidebar {
@@ -1078,7 +1084,7 @@ def load_mugilidae_31_models():
         models['feature_names'] = joblib.load('feature_names_31features.pkl')
         return models, True
     except Exception as e:
-        st.warning(f"⚠️ 31 features models not loaded: {e}")
+        st.warning(f"⚠️ Models not loaded: {e}")
         return None, False
 
 scaler_real, scaler_hybrid_real, svm_hybrid_real, selector_real, pca_real, ariidae_loaded = load_ariidae_models()
@@ -1128,7 +1134,7 @@ def predict_ariidae(features):
         return "Arius maculatus"
 
 # ============================================
-# SIDEBAR
+# SIDEBAR - UPDATED WITH ALL MODELS
 # ============================================
 with st.sidebar:
     st.markdown("### 🧭 Navigation")
@@ -1157,10 +1163,11 @@ with st.sidebar:
     
     st.markdown("---")
     
-    # Model Performance
+    # Model Performance - UPDATED WITH ALL MODELS
     st.markdown("""
     <div class="sidebar-section">
         <h4>📊 Model Performance</h4>
+        <div style="margin-bottom: 0.3rem; font-size: 0.75rem; color: #888; font-weight: 600;">🐟 Ariidae Models</div>
         <div class="perf-item">
             <span>🌿 CART</span>
             <span class="perf-acc">69.2%</span>
@@ -1173,13 +1180,27 @@ with st.sidebar:
             <span>📊 KNN</span>
             <span class="perf-acc">88.5%</span>
         </div>
-        <div class="perf-item" style="border-bottom: 2px solid #f39c12; padding-bottom: 0.5rem;">
-            <span>🏆 HYBRID</span>
+        <div class="perf-item" style="border-bottom: 2px solid #f39c12; padding-bottom: 0.5rem; margin-bottom: 0.5rem;">
+            <span>🏆 HYBRID CART-SVM</span>
             <span class="perf-acc perf-best">92.3%</span>
         </div>
-        <div style="margin-top: 0.5rem; font-size: 0.8rem; color: #888;">
-            <span>🏆 ANN-GWO: </span>
-            <span style="color: #f39c12; font-weight: 600;">91.5%</span>
+        
+        <div style="margin-bottom: 0.3rem; font-size: 0.75rem; color: #888; font-weight: 600;">🐟 Mugilidae Models</div>
+        <div class="perf-item">
+            <span>🧠 ANN</span>
+            <span class="perf-mugilidae">85.5%</span>
+        </div>
+        <div class="perf-item">
+            <span>🧠 ANN-PSO</span>
+            <span class="perf-mugilidae">89.0%</span>
+        </div>
+        <div class="perf-item">
+            <span>🧠 ANN-GA</span>
+            <span class="perf-mugilidae">90.0%</span>
+        </div>
+        <div class="perf-item" style="border-bottom: 2px solid #f7971e; padding-bottom: 0.5rem;">
+            <span>🏆 ANN-GWO</span>
+            <span class="perf-acc perf-best">91.5%</span>
         </div>
     </div>
     """, unsafe_allow_html=True)
@@ -1500,7 +1521,7 @@ elif choice == "🐟 Ariidae Classifier":
                 """)
 
 # ============================================
-# MUGILIDAE CLASSIFIER - UPDATED (REMOVED "(31 features)")
+# MUGILIDAE CLASSIFIER
 # ============================================
 elif choice == "🐟 Mugilidae Classifier":
     st.markdown("## 🐟 Mugilidae Fish Classification")
@@ -1772,7 +1793,7 @@ elif choice == "📊 Batch Prediction":
                 )
 
 # ============================================
-# COMPARE MODELS - REMOVED "Model Performance Comparison" box
+# COMPARE MODELS - UPDATED WITH ALL MODELS
 # ============================================
 elif choice == "⚖️ Compare Models":
     st.markdown("## ⚖️ Model Performance Comparison")
@@ -1782,18 +1803,19 @@ elif choice == "⚖️ Compare Models":
     with col1:
         st.markdown("""
         <div style="background: linear-gradient(135deg, #f0f4ff, #fff); padding: 1.5rem; border-radius: 16px; border: 1px solid #e8e8e8;">
-            <h3 style="margin-top: 0; color: #667eea;">🐟 Ariidae</h3>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;">
-                <div><span style="color:#888;">Best Model:</span></div>
-                <div><strong>Hybrid CART-SVM</strong></div>
-                <div><span style="color:#888;">Accuracy:</span></div>
+            <h3 style="margin-top: 0; color: #667eea;">🐟 Ariidae Models</h3>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.3rem;">
+                <div><span style="color:#888;">🌿 CART:</span></div>
+                <div><strong>69.2%</strong></div>
+                <div><span style="color:#888;">⚡ SVM:</span></div>
+                <div><strong>92.3%</strong></div>
+                <div><span style="color:#888;">📊 KNN:</span></div>
+                <div><strong>88.5%</strong></div>
+                <div><span style="color:#888;">🏆 Hybrid CART-SVM:</span></div>
                 <div><strong style="color:#27ae60;">92.3%</strong></div>
-                <div><span style="color:#888;">F1-Score:</span></div>
-                <div><strong>91.5%</strong></div>
-                <div><span style="color:#888;">Species:</span></div>
-                <div><strong>12</strong></div>
-                <div><span style="color:#888;">Features:</span></div>
-                <div><strong>9</strong></div>
+                <div style="margin-top: 0.5rem; grid-column: span 2; font-size: 0.85rem; color: #888;">
+                    <span>⭐ Best: <strong style="color:#27ae60;">Hybrid CART-SVM</strong></span>
+                </div>
             </div>
         </div>
         """, unsafe_allow_html=True)
@@ -1801,35 +1823,36 @@ elif choice == "⚖️ Compare Models":
     with col2:
         st.markdown("""
         <div style="background: linear-gradient(135deg, #fef9e7, #fff); padding: 1.5rem; border-radius: 16px; border: 1px solid #f0e8d0;">
-            <h3 style="margin-top: 0; color: #f7971e;">🐟 Mugilidae</h3>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;">
-                <div><span style="color:#888;">Best Model:</span></div>
-                <div><strong>ANN-GWO</strong></div>
-                <div><span style="color:#888;">Accuracy:</span></div>
+            <h3 style="margin-top: 0; color: #f7971e;">🐟 Mugilidae Models</h3>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.3rem;">
+                <div><span style="color:#888;">🧠 ANN:</span></div>
+                <div><strong>85.5%</strong></div>
+                <div><span style="color:#888;">🧠 ANN-PSO:</span></div>
+                <div><strong>89.0%</strong></div>
+                <div><span style="color:#888;">🧠 ANN-GA:</span></div>
+                <div><strong>90.0%</strong></div>
+                <div><span style="color:#888;">🏆 ANN-GWO:</span></div>
                 <div><strong style="color:#27ae60;">91.5%</strong></div>
-                <div><span style="color:#888;">Architecture:</span></div>
-                <div><strong>Optimized</strong></div>
-                <div><span style="color:#888;">Species:</span></div>
-                <div><strong>5</strong></div>
-                <div><span style="color:#888;">Features:</span></div>
-                <div><strong>31</strong></div>
+                <div style="margin-top: 0.5rem; grid-column: span 2; font-size: 0.85rem; color: #888;">
+                    <span>⭐ Best: <strong style="color:#27ae60;">ANN-GWO</strong></span>
+                </div>
             </div>
         </div>
         """, unsafe_allow_html=True)
     
     st.markdown("---")
     
-    # Accuracy Comparison Chart with correct values
+    # Accuracy Comparison Chart with ALL models
     st.markdown("### 📊 Accuracy Comparison Chart")
     
-    fig, ax = plt.subplots(figsize=(12, 6))
+    fig, ax = plt.subplots(figsize=(14, 6))
     
-    # Data with correct Mugilidae accuracy
-    models = ['Hybrid CART-SVM', 'ANN', 'ANN-PSO', 'ANN-GA', 'ANN-GWO']
-    accuracies = [92.3, 85.5, 89.0, 90.0, 91.5]
-    colors = ['#2ecc71', '#95a5a6', '#e74c3c', '#f39c12', '#3498db']
-    labels = ['Ariidae', 'Mugilidae', 'Mugilidae', 'Mugilidae', 'Mugilidae 🏆']
+    # All models from both families
+    models = ['CART', 'KNN', 'SVM', 'Hybrid CART-SVM', 'ANN', 'ANN-PSO', 'ANN-GA', 'ANN-GWO']
+    accuracies = [69.2, 88.5, 92.3, 92.3, 85.5, 89.0, 90.0, 91.5]
+    colors = ['#95a5a6', '#3498db', '#2ecc71', '#27ae60', '#f39c12', '#e67e22', '#d35400', '#c0392b']
     
+    # Create grouped bars with different colors for each model
     bars = ax.bar(models, accuracies, color=colors, edgecolor='black', linewidth=1.5)
     ax.set_ylabel('Accuracy (%)', fontsize=12, fontweight='600')
     ax.set_title('Model Accuracy Comparison - AriMugi ID', fontsize=14, fontweight='700')
@@ -1837,14 +1860,18 @@ elif choice == "⚖️ Compare Models":
     ax.grid(True, alpha=0.3, axis='y')
     ax.set_facecolor('#fafafa')
     
-    for bar, acc, label in zip(bars, accuracies, labels):
-        ax.text(bar.get_x() + bar.get_width()/2, bar.get_height() + 1, 
-                f'{acc}%', ha='center', va='bottom', fontweight='bold', fontsize=11)
-        ax.text(bar.get_x() + bar.get_width()/2, bar.get_height() - 8, 
-                label, ha='center', va='bottom', fontsize=8, color='white', fontweight='bold')
+    # Add value labels on bars
+    for bar, acc in zip(bars, accuracies):
+        ax.text(bar.get_x() + bar.get_width()/2, bar.get_height() + 0.5, 
+                f'{acc}%', ha='center', va='bottom', fontweight='bold', fontsize=10)
     
-    ax.axhline(y=92.3, color='#2ecc71', linestyle='--', alpha=0.5, linewidth=1.5, label='Ariidae Best: 92.3%')
-    ax.axhline(y=91.5, color='#3498db', linestyle='--', alpha=0.5, linewidth=1.5, label='Mugilidae Best: 91.5%')
+    # Add family labels
+    ax.text(1.5, -5, '🐟 Ariidae', ha='center', va='top', fontsize=11, fontweight='bold', color='#667eea')
+    ax.text(6, -5, '🐟 Mugilidae', ha='center', va='top', fontsize=11, fontweight='bold', color='#f7971e')
+    
+    # Add best model indicators
+    ax.axhline(y=92.3, color='#2ecc71', linestyle='--', alpha=0.7, linewidth=1.5, label='Ariidae Best: 92.3%')
+    ax.axhline(y=91.5, color='#c0392b', linestyle='--', alpha=0.7, linewidth=1.5, label='Mugilidae Best: 91.5%')
     ax.legend(loc='lower right', fontsize=9)
     
     plt.tight_layout()
@@ -1857,12 +1884,13 @@ elif choice == "⚖️ Compare Models":
     with col1:
         st.markdown("""
         <div style="background: #f0faf0; padding: 1rem; border-radius: 12px; border-left: 4px solid #27ae60;">
-            <h4 style="margin: 0; color: #27ae60;">✅ Ariidae Advantages</h4>
+            <h4 style="margin: 0; color: #27ae60;">✅ Ariidae</h4>
             <ul style="margin: 0.5rem 0; padding-left: 1.2rem; color: #444;">
-                <li>Higher accuracy (<strong>92.3%</strong>)</li>
-                <li>More species coverage (<strong>12</strong>)</li>
-                <li>Simpler features (<strong>9</strong>)</li>
-                <li>Faster prediction (<strong>~2 sec</strong>)</li>
+                <li><strong>Best Model:</strong> Hybrid CART-SVM (<strong>92.3%</strong>)</li>
+                <li>Species coverage: <strong>12</strong></li>
+                <li>Features: <strong>9</strong></li>
+                <li>SVM also achieves <strong>92.3%</strong> accuracy</li>
+                <li>KNN: <strong>88.5%</strong> · CART: <strong>69.2%</strong></li>
             </ul>
         </div>
         """, unsafe_allow_html=True)
@@ -1870,13 +1898,13 @@ elif choice == "⚖️ Compare Models":
     with col2:
         st.markdown("""
         <div style="background: #fef9e7; padding: 1rem; border-radius: 12px; border-left: 4px solid #f39c12;">
-            <h4 style="margin: 0; color: #f39c12;">✅ Mugilidae Advantages</h4>
+            <h4 style="margin: 0; color: #f39c12;">✅ Mugilidae</h4>
             <ul style="margin: 0.5rem 0; padding-left: 1.2rem; color: #444;">
-                <li>More features (<strong>31</strong>) for detailed analysis</li>
-                <li>High accuracy (<strong>91.5%</strong> with ANN-GWO)</li>
-                <li>Robust to noise (<strong>GWO optimization</strong>)</li>
-                <li>Multiple model options (<strong>ANN, PSO, GA, GWO</strong>)</li>
-                <li>Probability outputs for each species</li>
+                <li><strong>Best Model:</strong> ANN-GWO (<strong>91.5%</strong>)</li>
+                <li>Species coverage: <strong>5</strong></li>
+                <li>Features: <strong>31</strong></li>
+                <li>ANN-GA: <strong>90.0%</strong> · ANN-PSO: <strong>89.0%</strong></li>
+                <li>ANN: <strong>85.5%</strong></li>
             </ul>
         </div>
         """, unsafe_allow_html=True)
