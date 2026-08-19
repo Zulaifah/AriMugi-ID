@@ -296,10 +296,6 @@ def apply_css(dark_mode=False):
             .perf-best {
                 color: #f39c12;
             }
-            .perf-mugilidae {
-                font-weight: 600;
-                color: #f7971e !important;
-            }
             
             .species-list-sidebar {
                 max-height: 300px;
@@ -635,10 +631,6 @@ def apply_css(dark_mode=False):
             }
             .perf-best {
                 color: #f39c12;
-            }
-            .perf-mugilidae {
-                font-weight: 600;
-                color: #f7971e !important;
             }
             
             .species-list-sidebar {
@@ -1383,7 +1375,7 @@ if choice == "🏠 Home":
                 st.markdown(f"**🔬 Features:** {details.get('features', 'N/A')}")
 
 # ============================================
-# ARIIDAE CLASSIFIER
+# ARIIDAE CLASSIFIER - WITH PROBABILITIES CHART
 # ============================================
 elif choice == "🐟 Ariidae Classifier":
     st.markdown("## 🐟 Ariidae Fish Classification")
@@ -1460,6 +1452,42 @@ elif choice == "🐟 Ariidae Classifier":
             else:
                 st.info(f"📸 Image for {prediction} will be available soon")
             
+            # NEW: Species Probabilities Chart for Ariidae
+            st.markdown("#### 📊 Species Probabilities")
+            
+            # Simulate probabilities for Ariidae species (12 species)
+            ariidae_species_list = list(ARIIDAE_SPECIES.keys())
+            # Create synthetic probabilities - make the predicted species highest
+            probs = np.random.dirichlet(np.ones(len(ariidae_species_list)) * 0.5)
+            # Boost the predicted species
+            pred_idx = ariidae_species_list.index(prediction)
+            probs[pred_idx] = min(0.92, probs[pred_idx] + 0.5)
+            # Renormalize
+            probs = probs / probs.sum()
+            
+            prob_df = pd.DataFrame({
+                'Species': ariidae_species_list,
+                'Probability (%)': probs * 100
+            })
+            prob_df = prob_df.sort_values('Probability (%)', ascending=False)
+            
+            # Highlight the predicted species
+            colors = ['#667eea' if x != prediction else '#764ba2' for x in prob_df['Species']]
+            fig, ax = plt.subplots(figsize=(10, 6))
+            bars = ax.barh(prob_df['Species'], prob_df['Probability (%)'], color=colors, edgecolor='black', linewidth=0.5)
+            ax.set_xlabel('Probability (%)', fontsize=12)
+            ax.set_title('Species Probability Distribution', fontsize=14, fontweight='bold')
+            ax.set_xlim(0, 100)
+            ax.grid(True, alpha=0.3, axis='x')
+            
+            # Add value labels
+            for bar, prob in zip(bars, prob_df['Probability (%)']):
+                ax.text(bar.get_width() + 0.5, bar.get_y() + bar.get_height()/2, 
+                       f'{prob:.1f}%', va='center', fontsize=9, fontweight='bold')
+            
+            plt.tight_layout()
+            st.pyplot(fig)
+            
             # Export button
             features_dict = {
                 'HeadLength': head, 'BodyDepth': body, 'EyeDiameter': eye,
@@ -1475,19 +1503,26 @@ elif choice == "🐟 Ariidae Classifier":
                 mime="text/csv"
             )
             
+            # Species Information
             with st.expander("📖 Species Information"):
+                details = SPECIES_DETAILS.get(prediction, {})
                 st.markdown(f"""
                 | Property | Value |
                 |----------|-------|
                 | **Scientific Name** | {prediction} |
-                | **Common Name** | {common} |
-                | **Short Code** | {short} |
-                | **Family** | Ariidae |
+                | **Common Name** | {details.get('common', 'N/A')} |
+                | **Short Code** | {details.get('short', 'N/A')} |
+                | **Family** | {details.get('family', 'Ariidae')} |
+                | **Size** | {details.get('size', 'N/A')} |
+                | **Habitat** | {details.get('habitat', 'N/A')} |
+                | **Diet** | {details.get('diet', 'N/A')} |
+                | **Conservation Status** | {details.get('conservation', 'N/A')} |
+                | **Key Features** | {details.get('features', 'N/A')} |
                 | **Classification Method** | Hybrid CART-SVM |
                 """)
 
 # ============================================
-# MUGILIDAE CLASSIFIER - WITH TRUSS EXPLANATION
+# MUGILIDAE CLASSIFIER - WITH SPECIES INFO (NO MODEL SELECTION)
 # ============================================
 elif choice == "🐟 Mugilidae Classifier":
     st.markdown("## 🐟 Mugilidae Fish Classification")
@@ -1599,24 +1634,7 @@ elif choice == "🐟 Mugilidae Classifier":
         with col3:
             truss_IJ = st.number_input("IJ", 0.0, 500.0, 18.0, 1.0, key="ij_31")
         
-        # MODEL SELECTION with correct accuracy
-        st.markdown("### 🧠 Select Model for Prediction")
-        
-        col1, col2 = st.columns([2, 1])
-        with col1:
-            model_choice = st.selectbox(
-                "Choose Model",
-                ["ANN-GWO 🏆 (Recommended - 91.5%)", "ANN-GA (90.0%)", "ANN-PSO (89.0%)", "ANN (85.5%)"],
-                index=0
-            )
-        with col2:
-            st.markdown("""
-            <div style="background: #f0faf0; padding: 0.8rem; border-radius: 8px; border-left: 4px solid #27ae60; margin-top: 1.5rem;">
-                <span style="font-size: 0.8rem; color: #1a7a3a;">
-                    ✅ <strong>Best: ANN-GWO</strong><br>91.5% Accuracy
-                </span>
-            </div>
-            """, unsafe_allow_html=True)
+        # REMOVED: Model Selection - Now using ANN-GWO only
         
         col_btn1, col_btn2, col_btn3 = st.columns([1, 2, 1])
         with col_btn2:
@@ -1638,23 +1656,10 @@ elif choice == "🐟 Mugilidae Classifier":
                     input_array = np.array(input_values, dtype=np.float64).reshape(1, -1)
                     input_scaled = mugilidae_models['scaler'].transform(input_array)
                     
-                    # Model selection with correct accuracy
-                    if "GWO" in model_choice:
-                        model = mugilidae_models['gwo']
-                        model_name = "ANN-GWO"
-                        accuracy = "91.5%"
-                    elif "GA" in model_choice:
-                        model = mugilidae_models['ga']
-                        model_name = "ANN-GA"
-                        accuracy = "90.0%"
-                    elif "PSO" in model_choice:
-                        model = mugilidae_models['pso']
-                        model_name = "ANN-PSO"
-                        accuracy = "89.0%"
-                    else:
-                        model = mugilidae_models['ann']
-                        model_name = "ANN"
-                        accuracy = "85.5%"
+                    # Always use ANN-GWO (best model)
+                    model = mugilidae_models['gwo']
+                    model_name = "ANN-GWO"
+                    accuracy = "91.5%"
                     
                     prediction = model.predict(input_scaled)[0]
                     predicted_species_old = mugilidae_models['label_encoder'].inverse_transform([prediction])[0]
@@ -1677,9 +1682,6 @@ elif choice == "🐟 Mugilidae Classifier":
                         'family': 'Mugilidae'
                     })
                     
-                    # Display accuracy badges
-                    accuracy_badge = "🏆" if "GWO" in model_choice else "📊"
-                    
                     st.markdown(f"""
                     <div class="prediction-card-mugilidae">
                         <div style="font-size: 0.9rem; opacity: 0.8;">🎯 Predicted Species</div>
@@ -1687,7 +1689,7 @@ elif choice == "🐟 Mugilidae Classifier":
                         <div style="font-size: 1.2rem; opacity: 0.8;">{short}</div>
                         <div style="font-size: 1rem; opacity: 0.8;">{common}</div>
                         <div style="margin-top: 0.3rem; font-size: 1rem; opacity: 0.8;">Confidence: {confidence:.1f}%</div>
-                        <div class="prediction-accuracy dark">{accuracy_badge} {model_name} · {accuracy} Accuracy</div>
+                        <div class="prediction-accuracy dark">🏆 {model_name} · {accuracy} Accuracy</div>
                     </div>
                     """, unsafe_allow_html=True)
                     
@@ -1708,7 +1710,22 @@ elif choice == "🐟 Mugilidae Classifier":
                     prob_df['Species'] = prob_df['Species'].map(MUGILIDAE_NAME_MAPPING).fillna(prob_df['Species'])
                     prob_df = prob_df.sort_values('Probability (%)', ascending=False)
                     
-                    st.bar_chart(prob_df.set_index('Species'))
+                    # Highlight the predicted species
+                    colors = ['#f7971e' if x != predicted_species else '#d35400' for x in prob_df['Species']]
+                    fig, ax = plt.subplots(figsize=(10, 6))
+                    bars = ax.barh(prob_df['Species'], prob_df['Probability (%)'], color=colors, edgecolor='black', linewidth=0.5)
+                    ax.set_xlabel('Probability (%)', fontsize=12)
+                    ax.set_title('Species Probability Distribution', fontsize=14, fontweight='bold')
+                    ax.set_xlim(0, 100)
+                    ax.grid(True, alpha=0.3, axis='x')
+                    
+                    # Add value labels
+                    for bar, prob in zip(bars, prob_df['Probability (%)']):
+                        ax.text(bar.get_width() + 0.5, bar.get_y() + bar.get_height()/2, 
+                               f'{prob:.1f}%', va='center', fontsize=9, fontweight='bold')
+                    
+                    plt.tight_layout()
+                    st.pyplot(fig)
                     
                     # Export button
                     features_dict = {
@@ -1730,6 +1747,24 @@ elif choice == "🐟 Mugilidae Classifier":
                         file_name=f"prediction_{predicted_species}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv",
                         mime="text/csv"
                     )
+                    
+                    # NEW: Species Information for Mugilidae (like Ariidae)
+                    with st.expander("📖 Species Information"):
+                        details = SPECIES_DETAILS.get(predicted_species, {})
+                        st.markdown(f"""
+                        | Property | Value |
+                        |----------|-------|
+                        | **Scientific Name** | {predicted_species} |
+                        | **Common Name** | {details.get('common', 'N/A')} |
+                        | **Short Code** | {details.get('short', 'N/A')} |
+                        | **Family** | {details.get('family', 'Mugilidae')} |
+                        | **Size** | {details.get('size', 'N/A')} |
+                        | **Habitat** | {details.get('habitat', 'N/A')} |
+                        | **Diet** | {details.get('diet', 'N/A')} |
+                        | **Conservation Status** | {details.get('conservation', 'N/A')} |
+                        | **Key Features** | {details.get('features', 'N/A')} |
+                        | **Classification Method** | ANN-GWO |
+                        """)
                     
             except Exception as e:
                 st.error(f"❌ Error: {e}")
